@@ -17,9 +17,11 @@ Vashold, L., Pirich, G., Heinze, M., & Kuschnig, N. (2024). _Mines-Rivers-Yields
 
 # 👨‍🏫 Teaching
 
-Winter Semester 2024/25 · Macroeconomics (B.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?C=L;I=2398;LV=3;L2=S;L3=S;U=H;S=24W;LANG=EN)
+Winter Semester 2025/26 · Econometrics II (B.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?S=25W;JOIN=AND;T=;LV=3;L2=S;C=S;L3=S;I=;L=heinze;U=H;LANG=EN) · [💻 View Slides](econometrics-ii.md)
 
 Summer Semester 2025 · Econometrics I (B.Sc. level, as lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?S=25S;JOIN=AND;T=;LV=3;L2=S;C=S;L3=S;I=6250;L=;U=H;LANG=EN) · [💻 View Slides](econometrics-i.md)
+
+Winter Semester 2024/25 · Macroeconomics (B.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?C=L;I=2398;LV=3;L2=S;L3=S;U=H;S=24W;LANG=EN)
 
 
 
