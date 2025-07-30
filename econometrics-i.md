@@ -4,7 +4,8 @@ title: Max Heinze
 description: Economics PhD Student @ WU Vienna
 ---
 
-# Econometrics I Slides 
+
+# Econometrics I Slides
 
 **Module 00: Preliminaries** · [View German Slides](assets/00_grundlagen.html) · [View English Slides](assets/00_preliminaries.html)
 

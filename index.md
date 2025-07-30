@@ -25,15 +25,8 @@ Summer Semester 2025 · Econometrics I (B.Sc. level, as lecturer) · [View Sylla
 
 # 📦 Miscellaneous
 
-[🥗 This Week's Scraped Lunch Menus](menu.md) · Tables containing current lunch options from different WU campus places.
-
 [📐 Interactive Charts for Teaching Introductory Macroeconomics](interactivemacro.md) · Charts of introductory Macro models (based on the textbook by Blanchard) with interactive sliders.
 
-[💻 More Colorful Beamer Template](https://www.overleaf.com/read/kwkjhxfrbpcz#0ff317) [External Link] · The more colorful version of the (messy) LaTeX Beamer template I use.
+[💻 Beamer Template](https://www.overleaf.com/read/yzktsvtbpbwt#235b84) [External Link] · The (messy) LaTeX Beamer template I use.
 
-[💻 Less Colorful Beamer Template](https://www.overleaf.com/read/yzktsvtbpbwt#235b84) [External Link] · The less colorful version of the (messy) LaTeX Beamer template I use.
-
-[🧮 Matrix Definiteness Checker](matrix.md) · Check the definiteness of a matrix.
-
-[🧮 Matrix Determinant](determinant.md) · Compute the determinant of a matrix.
-
+[🥗 This Week's Scraped Lunch Menus](menu.md) · Tables containing current lunch options from different WU campus places. 
