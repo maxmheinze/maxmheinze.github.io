@@ -30,5 +30,3 @@ Winter Semester 2024/25 · Macroeconomics (B.Sc. level, as co-lecturer) · [View
 [📐 Interactive Charts for Teaching Introductory Macroeconomics](interactivemacro.md) · Charts of introductory Macro models (based on the textbook by Blanchard) with interactive sliders.
 
 [💻 Beamer Template](https://www.overleaf.com/read/yzktsvtbpbwt#235b84) [External Link] · The (messy) LaTeX Beamer template I use.
-
-[🥗 This Week's Scraped Lunch Menus](menu.md) · Tables containing current lunch options from different WU campus places. 
