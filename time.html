@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+    }
+    
+    #time {
+      font-size: 120px;
+      font-weight: bold;
+      color: #24292f;
+    }
+    
+    @media (max-width: 768px) {
+      #time {
+        font-size: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="time"></div>
+  
+  <script>
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+    }
+    
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
