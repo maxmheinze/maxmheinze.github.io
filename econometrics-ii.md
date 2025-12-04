@@ -15,3 +15,5 @@ description: Economics PhD Student @ WU Vienna
 **Module 2: Causality and DAGs** · [View Slides](assets/2_causality_dag.html)
 
 **Module 3: Threats to Causal Identification** · [View Slides](assets/3_threats.html)
+
+**Module 4: Instrumental Variables** · [View Slides](assets/4_iv.html)
