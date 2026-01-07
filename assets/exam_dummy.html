@@ -164,6 +164,8 @@
       font-size: 14pt;
       margin-bottom: 1.5rem;
       color: #333;
+      text-align: center;
+      max-width: 400px;
     }
 
     #unblur-btn {
@@ -178,6 +180,13 @@
 
     #unblur-btn:hover {
       background: #f0f0f0;
+    }
+
+    #unblur-btn:disabled {
+      background: #eee;
+      color: #999;
+      border-color: #999;
+      cursor: not-allowed;
     }
 
     #status {
@@ -195,12 +204,18 @@
       border-color: #a44;
       color: #a44;
     }
+
+    #countdown {
+      font-size: 12pt;
+      margin-top: 1rem;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <div id="status">Exam Active</div>
+  <div id="status">Loading...</div>
 
-  <div id="exam-content">
+  <div id="exam-content" class="blurred">
     <h1>1st Partial Exam</h1>
     <h2>Econometrics II (Course No. 2534)</h2>
     <div class="date">November 20, 2025</div>
@@ -325,27 +340,177 @@
     </div>
   </div>
 
-  <div id="overlay">
-    <div id="overlay-message">Content hidden</div>
-    <button id="unblur-btn">Click to Continue Exam</button>
+  <div id="overlay" class="visible">
+    <div id="overlay-message">Loading exam...</div>
+    <button id="unblur-btn" disabled>Please wait...</button>
+    <div id="countdown"></div>
   </div>
 
   <script>
+    // ========== CONFIGURATION ==========
+    // Set these times in YOUR timezone (Europe/Vienna)
+    // Format: 'YYYY-MM-DDTHH:MM:SS'
+    const EXAM_START = '2025-01-08T09:00:00';  // Exam becomes available
+    const EXAM_END = '2025-01-08T11:00:00';    // Exam closes
+    const TIMEZONE = 'Europe/Vienna';
+    // ===================================
+
     const examContent = document.getElementById('exam-content');
     const overlay = document.getElementById('overlay');
     const overlayMessage = document.getElementById('overlay-message');
     const unblurBtn = document.getElementById('unblur-btn');
     const status = document.getElementById('status');
+    const countdownEl = document.getElementById('countdown');
+
+    let examAvailable = false;
+    let isMobileDevice = false;
+
+    // Detect mobile/tablet devices (iOS, iPadOS, Android)
+    // Must allow macOS and other desktop operating systems
+    function detectMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      
+      // Check for Android
+      if (/android/i.test(ua)) {
+        return true;
+      }
+      
+      // Check for iOS (iPhone, iPod)
+      if (/iPhone|iPod/.test(ua)) {
+        return true;
+      }
+      
+      // Check for iPad specifically
+      // Modern iPadOS reports as Mac, so we need to check for touch support too
+      if (/iPad/.test(ua)) {
+        return true;
+      }
+      
+      // Detect iPadOS 13+ which masquerades as macOS
+      // It's a Mac user agent BUT has touch support AND is not actually macOS
+      if (/Macintosh/.test(ua) && navigator.maxTouchPoints && navigator.maxTouchPoints > 1) {
+        return true;
+      }
+      
+      return false;
+    }
+
+    function blockMobileDevice() {
+      isMobileDevice = true;
+      examAvailable = false;
+      overlayMessage.innerHTML = 'This exam cannot be taken on a mobile or tablet device.<br><br>Please use a desktop or laptop computer.';
+      unblurBtn.style.display = 'none';
+      countdownEl.textContent = '';
+      status.textContent = 'Mobile device blocked';
+      status.classList.add('warning');
+    }
+    let serverTimeOffset = 0; // Difference between server time and local time
+    let mouseInWindow = false;
+
+    // Fetch server time to prevent local clock manipulation
+    async function getServerTime() {
+      try {
+        const response = await fetch('https://worldtimeapi.org/api/timezone/' + TIMEZONE);
+        const data = await response.json();
+        const serverTime = new Date(data.datetime);
+        serverTimeOffset = serverTime.getTime() - Date.now();
+        return serverTime;
+      } catch (e) {
+        console.warn('Could not fetch server time, using local time');
+        return new Date();
+      }
+    }
+
+    function getCurrentTime() {
+      return new Date(Date.now() + serverTimeOffset);
+    }
+
+    function parseExamTime(timeStr) {
+      // Parse the time string and treat it as being in the specified timezone
+      // We create a date string that includes the timezone offset for Vienna
+      const date = new Date(timeStr);
+      // Get Vienna's offset for this date
+      const viennaDate = new Date(date.toLocaleString('en-US', { timeZone: TIMEZONE }));
+      const localDate = new Date(date.toLocaleString('en-US'));
+      const offset = localDate - viennaDate;
+      return new Date(date.getTime() + offset);
+    }
+
+    function formatTimeRemaining(ms) {
+      if (ms < 0) return '';
+      const hours = Math.floor(ms / (1000 * 60 * 60));
+      const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+      if (hours > 0) {
+        return `${hours}h ${minutes}m ${seconds}s`;
+      } else if (minutes > 0) {
+        return `${minutes}m ${seconds}s`;
+      } else {
+        return `${seconds}s`;
+      }
+    }
+
+    function checkExamAvailability() {
+      // If mobile device, stay blocked regardless of time
+      if (isMobileDevice) {
+        return;
+      }
+
+      const now = getCurrentTime();
+      const startTime = parseExamTime(EXAM_START);
+      const endTime = parseExamTime(EXAM_END);
+
+      if (now < startTime) {
+        // Exam not started yet
+        examAvailable = false;
+        const remaining = startTime - now;
+        overlayMessage.textContent = 'The exam has not started yet.';
+        unblurBtn.disabled = true;
+        unblurBtn.textContent = 'Please wait...';
+        countdownEl.textContent = 'Starts in: ' + formatTimeRemaining(remaining);
+        status.textContent = 'Not started';
+        status.classList.add('warning');
+      } else if (now > endTime) {
+        // Exam ended
+        examAvailable = false;
+        overlayMessage.textContent = 'The exam has ended.';
+        unblurBtn.disabled = true;
+        unblurBtn.textContent = 'Exam closed';
+        countdownEl.textContent = '';
+        status.textContent = 'Exam ended';
+        status.classList.add('warning');
+      } else {
+        // Exam is available
+        examAvailable = true;
+        const remaining = endTime - now;
+        countdownEl.textContent = 'Time remaining: ' + formatTimeRemaining(remaining);
+        
+        if (overlay.classList.contains('visible')) {
+          overlayMessage.textContent = 'Click to begin the exam';
+          unblurBtn.disabled = false;
+          unblurBtn.textContent = 'Click to Continue Exam';
+        }
+      }
+    }
 
     function blurExam(reason) {
       examContent.classList.add('blurred');
       overlay.classList.add('visible');
-      overlayMessage.textContent = reason;
+      if (examAvailable) {
+        overlayMessage.textContent = reason;
+        unblurBtn.disabled = false;
+        unblurBtn.textContent = 'Click to Continue Exam';
+      }
       status.textContent = reason;
       status.classList.add('warning');
     }
 
     function unblurExam() {
+      if (!examAvailable) return;
+      if (!mouseInWindow) {
+        blurExam('Move mouse into window first');
+        return;
+      }
       examContent.classList.remove('blurred');
       overlay.classList.remove('visible');
       status.textContent = 'Exam Active';
@@ -357,23 +522,50 @@
 
     // Blur on any keypress
     document.addEventListener('keydown', (e) => {
-      blurExam('Key pressed');
+      if (examAvailable) {
+        blurExam('Key pressed');
+      }
       e.preventDefault();
     });
 
     // Blur when window loses focus
     window.addEventListener('blur', () => {
-      blurExam('Window inactive');
+      if (examAvailable) {
+        blurExam('Window inactive');
+      }
     });
 
-    // Blur when mouse leaves the document - fires immediately on mouse exit
-    document.documentElement.addEventListener('mouseleave', () => {
-      blurExam('Mouse left window');
+    // Track mouse position for viewport detection
+    document.addEventListener('mousemove', (e) => {
+      const margin = 5; // Small margin to account for edge detection
+      const inWindow = (
+        e.clientX >= margin &&
+        e.clientX <= window.innerWidth - margin &&
+        e.clientY >= margin &&
+        e.clientY <= window.innerHeight - margin
+      );
+      
+      if (inWindow && !mouseInWindow) {
+        mouseInWindow = true;
+      } else if (!inWindow && mouseInWindow) {
+        mouseInWindow = false;
+        if (examAvailable && !overlay.classList.contains('visible')) {
+          blurExam('Mouse left window');
+        }
+      }
     });
 
-    // Also catch when mouse leaves body as backup
-    document.body.addEventListener('mouseleave', () => {
-      blurExam('Mouse left window');
+    // Also blur when mouse actually leaves the document
+    document.addEventListener('mouseleave', () => {
+      mouseInWindow = false;
+      if (examAvailable && !overlay.classList.contains('visible')) {
+        blurExam('Mouse left window');
+      }
+    });
+
+    // Mark mouse as in window when it enters
+    document.addEventListener('mouseenter', () => {
+      mouseInWindow = true;
     });
 
     // Disable right-click
@@ -391,8 +583,28 @@
 
     // Disable print
     window.addEventListener('beforeprint', () => {
-      blurExam('Print detected');
+      if (examAvailable) {
+        blurExam('Print detected');
+      }
     });
+
+    // Initialize
+    async function init() {
+      // Check for mobile device first
+      if (detectMobileDevice()) {
+        blockMobileDevice();
+        return; // Don't proceed with time checks
+      }
+
+      await getServerTime();
+      checkExamAvailability();
+      // Check availability every second
+      setInterval(checkExamAvailability, 1000);
+      // Re-sync server time every 5 minutes
+      setInterval(getServerTime, 5 * 60 * 1000);
+    }
+
+    init();
   </script>
 </body>
 </html>
