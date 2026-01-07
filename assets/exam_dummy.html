@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protected Exam</title>
+  <style>
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.7;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+    }
+
+    #exam-content {
+      background: white;
+      padding: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: filter 0.15s ease;
+    }
+
+    #exam-content.blurred {
+      filter: blur(15px);
+    }
+
+    h1 {
+      text-align: center;
+      border-bottom: 2px solid #333;
+      padding-bottom: 1rem;
+    }
+
+    .question {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-left: 4px solid #333;
+    }
+
+    .question-number {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #overlay.visible {
+      display: flex;
+    }
+
+    #unblur-btn {
+      padding: 1.5rem 3rem;
+      font-size: 1.25rem;
+      background: #4a90d9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    #unblur-btn:hover {
+      background: #3a7bc8;
+    }
+
+    #status {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: #4a4;
+      color: white;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+
+    #status.warning {
+      background: #a44;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Exam Active</div>
+
+  <div id="exam-content">
+    <h1>Econometrics Final Exam</h1>
+    <p><strong>Time allowed:</strong> 2 hours<br>
+    <strong>Answer all questions.</strong></p>
+
+    <div class="question">
+      <div class="question-number">Question 1 (25 points)</div>
+      <p>Consider the following regression model:</p>
+      <p style="text-align: center; font-style: italic;">
+        Y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>X<sub>i</sub> + β<sub>2</sub>Z<sub>i</sub> + ε<sub>i</sub>
+      </p>
+      <p>where Y is annual income (in thousands of dollars), X is years of education, and Z is years of work experience.</p>
+      <p>(a) Explain why OLS estimation of β<sub>1</sub> might be biased. What is the likely direction of the bias?</p>
+      <p>(b) Propose an instrumental variable for X and explain why it satisfies the relevance and exclusion conditions.</p>
+      <p>(c) Describe how you would test for the endogeneity of X using the Hausman test.</p>
+    </div>
+
+    <div class="question">
+      <div class="question-number">Question 2 (25 points)</div>
+      <p>A researcher has panel data on 500 firms over 10 years and wants to estimate the effect of R&D spending on productivity.</p>
+      <p>(a) Write down a fixed effects model specification and explain what assumption it relaxes compared to pooled OLS.</p>
+      <p>(b) Under what circumstances would you prefer random effects over fixed effects? How would you test this empirically?</p>
+      <p>(c) The researcher is concerned about serial correlation in the errors. Describe how this affects inference and what remedies are available.</p>
+    </div>
+
+    <div class="question">
+      <div class="question-number">Question 3 (25 points)</div>
+      <p>A policy was implemented on January 1, 2020 that affected only firms with more than 100 employees.</p>
+      <p>(a) Describe how you would use a regression discontinuity design to estimate the causal effect of this policy.</p>
+      <p>(b) What assumptions are required for the RD estimate to be valid? How would you test the key assumption?</p>
+      <p>(c) Explain the difference between sharp and fuzzy RD designs. Which would apply here?</p>
+    </div>
+
+    <div class="question">
+      <div class="question-number">Question 4 (25 points)</div>
+      <p>You have data from a randomized controlled trial where treatment was randomly assigned but compliance was imperfect.</p>
+      <p>(a) Define the Local Average Treatment Effect (LATE) and explain how it differs from the Average Treatment Effect (ATE).</p>
+      <p>(b) Explain how you would use the random assignment as an instrument. What is this approach called?</p>
+      <p>(c) Under what conditions would LATE equal ATE? Are these conditions likely to hold in practice?</p>
+    </div>
+  </div>
+
+  <div id="overlay">
+    <button id="unblur-btn">Click to Continue Exam</button>
+  </div>
+
+  <script>
+    const examContent = document.getElementById('exam-content');
+    const overlay = document.getElementById('overlay');
+    const unblurBtn = document.getElementById('unblur-btn');
+    const status = document.getElementById('status');
+
+    function blurExam(reason) {
+      examContent.classList.add('blurred');
+      overlay.classList.add('visible');
+      status.textContent = reason;
+      status.classList.add('warning');
+    }
+
+    function unblurExam() {
+      examContent.classList.remove('blurred');
+      overlay.classList.remove('visible');
+      status.textContent = 'Exam Active';
+      status.classList.remove('warning');
+    }
+
+    // Click to unblur
+    unblurBtn.addEventListener('click', unblurExam);
+
+    // Blur on any keypress
+    document.addEventListener('keydown', (e) => {
+      blurExam('Key pressed - click to continue');
+      e.preventDefault();
+    });
+
+    // Blur when window loses focus
+    window.addEventListener('blur', () => {
+      blurExam('Window inactive - click to continue');
+    });
+
+    // Blur when mouse leaves the document
+    document.addEventListener('mouseleave', () => {
+      blurExam('Mouse left window - click to continue');
+    });
+
+    // Disable right-click
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // Disable copy, cut, paste
+    document.addEventListener('copy', (e) => e.preventDefault());
+    document.addEventListener('cut', (e) => e.preventDefault());
+    document.addEventListener('paste', (e) => e.preventDefault());
+
+    // Disable drag
+    document.addEventListener('dragstart', (e) => e.preventDefault());
+  </script>
+</body>
+</html>
