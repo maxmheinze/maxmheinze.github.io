@@ -560,19 +560,17 @@
         mouseInWindow = true;
       } else {
         mouseInWindow = false;
+      }
+    });
+
+    // Detect mouse leaving the window - this is the reliable method
+    window.addEventListener('mouseout', (e) => {
+      if (e.relatedTarget === null) {
+        mouseInWindow = false;
         // Only blur if exam is available AND currently unblurred AND not just unblurred
         if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
           blurExam('Mouse left window');
         }
-      }
-    });
-
-    // Also blur when mouse actually leaves the document
-    document.addEventListener('mouseleave', () => {
-      mouseInWindow = false;
-      // Only blur if exam is available AND currently unblurred AND not just unblurred
-      if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
-        blurExam('Mouse left window');
       }
     });
 
@@ -581,7 +579,7 @@
       mouseInWindow = true;
     });
 
-    // Add listener to overlay as well to catch mouse leaving while overlay is visible
+    // Add listener to overlay as well to catch mouse state while overlay is visible
     overlay.addEventListener('mouseleave', () => {
       mouseInWindow = false;
     });
