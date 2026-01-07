@@ -364,7 +364,7 @@
 
     let examAvailable = false;
     let isMobileDevice = false;
-    let justUnblurred = false; // Prevent race condition on unblur
+    let mouseInWindow = false;
 
     // Detect mobile/tablet devices (iOS, iPadOS, Android)
     // Must allow macOS and other desktop operating systems
@@ -516,16 +516,6 @@
       overlay.classList.remove('visible');
       status.textContent = 'Exam Active';
       status.classList.remove('warning');
-      
-      // Set flag to prevent immediate re-blur from mouse events
-      justUnblurred = true;
-      setTimeout(() => {
-        justUnblurred = false;
-        // Check if mouse has left during the delay
-        if (!mouseInWindow && examAvailable && !overlay.classList.contains('visible')) {
-          blurExam('Mouse left window');
-        }
-      }, 100);
     }
 
     // Click to unblur
@@ -546,19 +536,25 @@
       }
     });
 
-    // Track mouse state
-    document.addEventListener('mouseenter', () => {
-      mouseInWindow = true;
+    // Blur when mouse leaves the document
+    document.documentElement.addEventListener('mouseleave', () => {
+      mouseInWindow = false;
+      if (examAvailable) {
+        blurExam('Mouse left window');
+      }
     });
 
-    // Detect mouse leaving - fires reliably even with fast movement
-    window.addEventListener('mouseout', (e) => {
-      if (e.relatedTarget === null) {
-        mouseInWindow = false;
-        if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
-          blurExam('Mouse left window');
-        }
+    // Also catch when mouse leaves body as backup
+    document.body.addEventListener('mouseleave', () => {
+      mouseInWindow = false;
+      if (examAvailable) {
+        blurExam('Mouse left window');
       }
+    });
+
+    // Track when mouse enters
+    document.documentElement.addEventListener('mouseenter', () => {
+      mouseInWindow = true;
     });
 
     // Disable right-click
