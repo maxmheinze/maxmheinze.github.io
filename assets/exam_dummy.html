@@ -546,59 +546,19 @@
       }
     });
 
-    // Track mouse position for viewport detection
-    let lastMouseX = 0;
-    let lastMouseY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-      
-      const margin = 5; // Small margin to account for edge detection
-      const inWindow = (
-        e.clientX >= margin &&
-        e.clientX <= window.innerWidth - margin &&
-        e.clientY >= margin &&
-        e.clientY <= window.innerHeight - margin
-      );
-      
-      if (inWindow) {
-        mouseInWindow = true;
-      } else {
-        mouseInWindow = false;
-      }
-    });
-
-    // Detect mouse leaving the window - this is the reliable method
-    window.addEventListener('mouseout', (e) => {
-      if (e.relatedTarget === null) {
-        // Verify mouse is actually outside the viewport
-        const margin = 10;
-        const actuallyOutside = (
-          lastMouseX < margin ||
-          lastMouseX > window.innerWidth - margin ||
-          lastMouseY < margin ||
-          lastMouseY > window.innerHeight - margin
-        );
-        
-        if (actuallyOutside) {
-          mouseInWindow = false;
-          // Only blur if exam is available AND currently unblurred AND not just unblurred
-          if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
-            blurExam('Mouse left window');
-          }
-        }
-      }
-    });
-
-    // Mark mouse as in window when it enters
+    // Track mouse state
     document.addEventListener('mouseenter', () => {
       mouseInWindow = true;
     });
 
-    // Add listener to overlay as well to catch mouse state while overlay is visible
-    overlay.addEventListener('mouseleave', () => {
-      mouseInWindow = false;
+    // Detect mouse leaving - fires reliably even with fast movement
+    window.addEventListener('mouseout', (e) => {
+      if (e.relatedTarget === null) {
+        mouseInWindow = false;
+        if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
+          blurExam('Mouse left window');
+        }
+      }
     });
 
     // Disable right-click
