@@ -547,7 +547,13 @@
     });
 
     // Track mouse position for viewport detection
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    
     document.addEventListener('mousemove', (e) => {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      
       const margin = 5; // Small margin to account for edge detection
       const inWindow = (
         e.clientX >= margin &&
@@ -566,10 +572,21 @@
     // Detect mouse leaving the window - this is the reliable method
     window.addEventListener('mouseout', (e) => {
       if (e.relatedTarget === null) {
-        mouseInWindow = false;
-        // Only blur if exam is available AND currently unblurred AND not just unblurred
-        if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
-          blurExam('Mouse left window');
+        // Verify mouse is actually outside the viewport
+        const margin = 10;
+        const actuallyOutside = (
+          lastMouseX < margin ||
+          lastMouseX > window.innerWidth - margin ||
+          lastMouseY < margin ||
+          lastMouseY > window.innerHeight - margin
+        );
+        
+        if (actuallyOutside) {
+          mouseInWindow = false;
+          // Only blur if exam is available AND currently unblurred AND not just unblurred
+          if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
+            blurExam('Mouse left window');
+          }
         }
       }
     });
