@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Protected Exam</title>
+  <title>1st Partial Exam - Econometrics II</title>
   <style>
     * {
       -webkit-user-select: none;
@@ -13,20 +13,17 @@
     }
 
     body {
-      font-family: Georgia, serif;
-      line-height: 1.7;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
       max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
-      background: #fafafa;
+      background: white;
     }
 
     #exam-content {
-      background: white;
-      padding: 2rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      transition: filter 0.15s ease;
+      transition: filter 0.1s ease;
     }
 
     #exam-content.blurred {
@@ -35,20 +32,114 @@
 
     h1 {
       text-align: center;
-      border-bottom: 2px solid #333;
-      padding-bottom: 1rem;
+      font-size: 14pt;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 12pt;
+      font-weight: normal;
+      margin-top: 0;
+      margin-bottom: 0.25rem;
+    }
+
+    .date {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .rules {
+      margin-bottom: 2rem;
+    }
+
+    .rules p {
+      margin-bottom: 0.5rem;
+    }
+
+    .rules ul {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+
+    .rules li {
+      margin-bottom: 0.5rem;
+    }
+
+    .rules ul ul {
+      margin-top: 0.5rem;
+    }
+
+    .exam-number {
+      border: 1px solid black;
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .exam-number-label {
+      font-size: 10pt;
+    }
+
+    .exam-number-value {
+      font-size: 24pt;
+      font-weight: bold;
     }
 
     .question {
       margin: 2rem 0;
-      padding: 1rem;
-      background: #f9f9f9;
-      border-left: 4px solid #333;
+      padding-top: 1rem;
+      border-top: 1px solid black;
     }
 
-    .question-number {
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .question-label {
       font-weight: bold;
+    }
+
+    .question-points {
+      font-weight: bold;
+    }
+
+    .question p {
+      margin: 0.75rem 0;
+    }
+
+    .question ol {
+      margin: 0.75rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .question ol[type="a"] {
+      list-style-type: lower-alpha;
+    }
+
+    .question li {
       margin-bottom: 0.5rem;
+    }
+
+    .formula {
+      text-align: center;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    table th, table td {
+      border: 1px solid black;
+      padding: 0.25rem 0.5rem;
+      text-align: center;
+      min-width: 2.5rem;
     }
 
     #overlay {
@@ -58,29 +149,35 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.95);
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      flex-direction: column;
     }
 
     #overlay.visible {
       display: flex;
     }
 
+    #overlay-message {
+      font-size: 14pt;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
     #unblur-btn {
-      padding: 1.5rem 3rem;
-      font-size: 1.25rem;
-      background: #4a90d9;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      padding: 1rem 2rem;
+      font-size: 12pt;
+      font-family: Helvetica, Arial, sans-serif;
+      background: white;
+      color: black;
+      border: 2px solid black;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     #unblur-btn:hover {
-      background: #3a7bc8;
+      background: #f0f0f0;
     }
 
     #status {
@@ -88,14 +185,15 @@
       top: 1rem;
       right: 1rem;
       padding: 0.5rem 1rem;
-      background: #4a4;
-      color: white;
-      border-radius: 4px;
-      font-size: 0.875rem;
+      background: white;
+      border: 1px solid #4a4;
+      color: #4a4;
+      font-size: 10pt;
     }
 
     #status.warning {
-      background: #a44;
+      border-color: #a44;
+      color: #a44;
     }
   </style>
 </head>
@@ -103,60 +201,146 @@
   <div id="status">Exam Active</div>
 
   <div id="exam-content">
-    <h1>Econometrics Final Exam</h1>
-    <p><strong>Time allowed:</strong> 2 hours<br>
-    <strong>Answer all questions.</strong></p>
+    <h1>1st Partial Exam</h1>
+    <h2>Econometrics II (Course No. 2534)</h2>
+    <div class="date">November 20, 2025</div>
 
-    <div class="question">
-      <div class="question-number">Question 1 (25 points)</div>
-      <p>Consider the following regression model:</p>
-      <p style="text-align: center; font-style: italic;">
-        Y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>X<sub>i</sub> + β<sub>2</sub>Z<sub>i</sub> + ε<sub>i</sub>
-      </p>
-      <p>where Y is annual income (in thousands of dollars), X is years of education, and Z is years of work experience.</p>
-      <p>(a) Explain why OLS estimation of β<sub>1</sub> might be biased. What is the likely direction of the bias?</p>
-      <p>(b) Propose an instrumental variable for X and explain why it satisfies the relevance and exclusion conditions.</p>
-      <p>(c) Describe how you would test for the endogeneity of X using the Hausman test.</p>
+    <div class="rules">
+      <p>Please be aware of the following <strong>rules</strong> for this exam:</p>
+      <ul>
+        <li>You have <strong>120 Minutes</strong> to answer the questions.</li>
+        <li>You can receive up to <strong>30 points</strong>.</li>
+        <li>There are 6 differently weighted questions in this exam. You should aim not to use more than 4 minutes per point. The order of questions is randomized and they can be answered independently.</li>
+        <li>Your exam is marked with an ID number on every page. <strong>Please do neither write your name nor your student ID number anywhere on this exam</strong>, so that we can guarantee fairness and anonymity while grading. Name and exam number are matched on a separate attendance sheet.</li>
+        <li>You are only allowed to answer the questions in <strong>English</strong>.</li>
+        <li>The following <strong>aids</strong> are allowed:
+          <ul>
+            <li>A calculator.</li>
+            <li>The cheat sheet that was created by your Cheat Sheet Group.</li>
+            <li>Empty sheets for taking notes (which cannot be handed in).</li>
+            <li>A bilingual dictionary (English and your native language).</li>
+            <li>Coffee.</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="exam-number">
+        <span class="exam-number-label">Exam No.</span><br>
+        <span class="exam-number-value">01</span>
+      </div>
     </div>
 
     <div class="question">
-      <div class="question-number">Question 2 (25 points)</div>
-      <p>A researcher has panel data on 500 firms over 10 years and wants to estimate the effect of R&D spending on productivity.</p>
-      <p>(a) Write down a fixed effects model specification and explain what assumption it relaxes compared to pooled OLS.</p>
-      <p>(b) Under what circumstances would you prefer random effects over fixed effects? How would you test this empirically?</p>
-      <p>(c) The researcher is concerned about serial correlation in the errors. Describe how this affects inference and what remedies are available.</p>
+      <div class="question-header">
+        <span class="question-label">Question 1</span>
+        <span class="question-points">3 Points</span>
+      </div>
+      <p>Assume you want to find out whether increased olive oil consumption leads to a longer life span, and if so, how large the effect is. For this, you collect data on the two variables and then use local polynomial regression, a non-parametric method. Is this a suitable workflow to answer the question at hand? Name <strong>two reasons</strong> why it is or is not.</p>
     </div>
 
     <div class="question">
-      <div class="question-number">Question 3 (25 points)</div>
-      <p>A policy was implemented on January 1, 2020 that affected only firms with more than 100 employees.</p>
-      <p>(a) Describe how you would use a regression discontinuity design to estimate the causal effect of this policy.</p>
-      <p>(b) What assumptions are required for the RD estimate to be valid? How would you test the key assumption?</p>
-      <p>(c) Explain the difference between sharp and fuzzy RD designs. Which would apply here?</p>
+      <div class="question-header">
+        <span class="question-label">Question 2</span>
+        <span class="question-points">3 Points</span>
+      </div>
+      <p>Imagine you conduct work on the question how education is related to wages. You collect data on the relevant variables and covariates, carefully construct a causal model, and run a regression. Afterwards, your friend Blobert comes over and says that he trained some advanced Machine Learning model on a large amount of data and it would outperform your model. Indeed, when you both remove the outcome variable from the datasets you collected and run a prediction competition, Blobert's predictions are more accurate than yours. Should you be worried? <strong>Explain</strong> why you should or should not be.</p>
     </div>
 
     <div class="question">
-      <div class="question-number">Question 4 (25 points)</div>
-      <p>You have data from a randomized controlled trial where treatment was randomly assigned but compliance was imperfect.</p>
-      <p>(a) Define the Local Average Treatment Effect (LATE) and explain how it differs from the Average Treatment Effect (ATE).</p>
-      <p>(b) Explain how you would use the random assignment as an instrument. What is this approach called?</p>
-      <p>(c) Under what conditions would LATE equal ATE? Are these conditions likely to hold in practice?</p>
+      <div class="question-header">
+        <span class="question-label">Question 3</span>
+        <span class="question-points">6 Points</span>
+      </div>
+      <p><strong>Draw</strong> a Directed Acyclic Graph (DAG) relating education and wages. The graph should include at least 8 nodes and 10 edges.</p>
+      <ol type="a">
+        <li><strong>Enumerate</strong> all <strong>paths</strong> from education to wage. <em>(2 points)</em></li>
+        <li><strong>Name</strong> all confounders, colliders, and mediators in your model. <em>(2 points)</em></li>
+        <li>Now think realistically and <strong>determine</strong> which variables would be <strong>unobserved</strong> in a real-life context. Mark them in the DAG and <strong>assess</strong> whether the causal effect of interest can still be identified. <em>(2 points)</em></li>
+      </ol>
+    </div>
+
+    <div class="question">
+      <div class="question-header">
+        <span class="question-label">Question 4</span>
+        <span class="question-points">6 Points</span>
+      </div>
+      <p>A team of researchers is interested in understanding the effect of eviction on individual income and health. To conduct the analysis, they plan to use available data from the United States.</p>
+      <ol type="a">
+        <li>Provide a simple <strong>regression equation</strong> that the team could use to answer their research question.</li>
+        <li>In your opinion, what potential issues could arise that would invalidate the <strong>internal validity</strong> of their results?</li>
+        <li>Do you believe that the results will be <strong>generalizable</strong>?</li>
+      </ol>
+    </div>
+
+    <div class="question">
+      <div class="question-header">
+        <span class="question-label">Question 5</span>
+        <span class="question-points">4 Points</span>
+      </div>
+      <p>You are told that the average treatment effect (ATE) equals 0.4 and the expected value of the untreated is 0.3. Treatment is balanced and there is appropriate overlap with respect to the covariates (G<sub>i</sub> and educ<sub>i</sub>), binary indicators for gender and completing education.</p>
+      <ol type="a">
+        <li><strong>Provide</strong> the formula through which the ATE has been found.</li>
+        <li><strong>Fill in</strong> the columns X<sub>i</sub>, Y<sub>i</sub>, Y<sub>i</sub>(1), and Y<sub>i</sub>(0) so that your table is internally consistent and reproduces the stated ATE. Note that several answers can be correct.</li>
+        <li>In the <strong>potential outcome framework</strong>, what is the main issue of researchers?</li>
+      </ol>
+      <table>
+        <tr>
+          <th><em>i</em></th>
+          <th>G<sub>i</sub></th>
+          <th>educ<sub>i</sub></th>
+          <th>X<sub>i</sub></th>
+          <th>Y<sub>i</sub></th>
+          <th>Y<sub>i</sub>(1)</th>
+          <th>Y<sub>i</sub>(0)</th>
+        </tr>
+        <tr><td>1</td><td>0</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td>0</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>4</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>5</td><td>0</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>6</td><td>0</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>7</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>8</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>9</td><td>0</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>10</td><td>0</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>11</td><td>1</td><td>0</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>12</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+      </table>
+    </div>
+
+    <div class="question">
+      <div class="question-header">
+        <span class="question-label">Question 6</span>
+        <span class="question-points">6 Points</span>
+      </div>
+      <p>Consider the following labor <strong>supply</strong> and <strong>demand</strong> functions, both driven by the wage <em>w</em>:</p>
+      <div class="formula">
+        L<sub>s</sub> = α<sup>s</sup>w + u<sup>s</sup><br>
+        L<sub>d</sub> = α<sup>d</sup>w + u<sup>d</sup>
+      </div>
+      <p>In labor economics, a question of interest has always been the impact of the wages on the demand of labor.</p>
+      <ol type="a">
+        <li>According to you, is it possible to estimate <strong>the effect of wage</strong> on the demand of labor? Why?</li>
+        <li>Formally <strong>prove</strong> your answer in a.</li>
+      </ol>
     </div>
   </div>
 
   <div id="overlay">
+    <div id="overlay-message">Content hidden</div>
     <button id="unblur-btn">Click to Continue Exam</button>
   </div>
 
   <script>
     const examContent = document.getElementById('exam-content');
     const overlay = document.getElementById('overlay');
+    const overlayMessage = document.getElementById('overlay-message');
     const unblurBtn = document.getElementById('unblur-btn');
     const status = document.getElementById('status');
 
     function blurExam(reason) {
       examContent.classList.add('blurred');
       overlay.classList.add('visible');
+      overlayMessage.textContent = reason;
       status.textContent = reason;
       status.classList.add('warning');
     }
@@ -173,18 +357,23 @@
 
     // Blur on any keypress
     document.addEventListener('keydown', (e) => {
-      blurExam('Key pressed - click to continue');
+      blurExam('Key pressed');
       e.preventDefault();
     });
 
     // Blur when window loses focus
     window.addEventListener('blur', () => {
-      blurExam('Window inactive - click to continue');
+      blurExam('Window inactive');
     });
 
-    // Blur when mouse leaves the document
-    document.addEventListener('mouseleave', () => {
-      blurExam('Mouse left window - click to continue');
+    // Blur when mouse leaves the document - fires immediately on mouse exit
+    document.documentElement.addEventListener('mouseleave', () => {
+      blurExam('Mouse left window');
+    });
+
+    // Also catch when mouse leaves body as backup
+    document.body.addEventListener('mouseleave', () => {
+      blurExam('Mouse left window');
     });
 
     // Disable right-click
@@ -199,6 +388,11 @@
 
     // Disable drag
     document.addEventListener('dragstart', (e) => e.preventDefault());
+
+    // Disable print
+    window.addEventListener('beforeprint', () => {
+      blurExam('Print detected');
+    });
   </script>
 </body>
 </html>
