@@ -350,8 +350,8 @@
     // ========== CONFIGURATION ==========
     // Set these times in YOUR timezone (Europe/Vienna)
     // Format: 'YYYY-MM-DDTHH:MM:SS'
-    const EXAM_START = '2026-01-01T09:00:00';  // Exam becomes available
-    const EXAM_END = '2026-01-30T11:00:00';    // Exam closes
+    const EXAM_START = '2026-01-01T00:00:00';  // Exam becomes available
+    const EXAM_END = '2026-01-31T23:59:59';    // Exam closes
     const TIMEZONE = 'Europe/Vienna';
     // ===================================
 
@@ -364,6 +364,7 @@
 
     let examAvailable = false;
     let isMobileDevice = false;
+    let justUnblurred = false; // Prevent race condition on unblur
 
     // Detect mobile/tablet devices (iOS, iPadOS, Android)
     // Must allow macOS and other desktop operating systems
@@ -515,6 +516,16 @@
       overlay.classList.remove('visible');
       status.textContent = 'Exam Active';
       status.classList.remove('warning');
+      
+      // Set flag to prevent immediate re-blur from mouse events
+      justUnblurred = true;
+      setTimeout(() => {
+        justUnblurred = false;
+        // Check if mouse has left during the delay
+        if (!mouseInWindow && examAvailable && !overlay.classList.contains('visible')) {
+          blurExam('Mouse left window');
+        }
+      }, 100);
     }
 
     // Click to unblur
@@ -545,11 +556,12 @@
         e.clientY <= window.innerHeight - margin
       );
       
-      if (inWindow && !mouseInWindow) {
+      if (inWindow) {
         mouseInWindow = true;
-      } else if (!inWindow && mouseInWindow) {
+      } else {
         mouseInWindow = false;
-        if (examAvailable) {
+        // Only blur if exam is available AND currently unblurred AND not just unblurred
+        if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
           blurExam('Mouse left window');
         }
       }
@@ -558,7 +570,8 @@
     // Also blur when mouse actually leaves the document
     document.addEventListener('mouseleave', () => {
       mouseInWindow = false;
-      if (examAvailable) {
+      // Only blur if exam is available AND currently unblurred AND not just unblurred
+      if (examAvailable && !overlay.classList.contains('visible') && !justUnblurred) {
         blurExam('Mouse left window');
       }
     });
@@ -566,6 +579,11 @@
     // Mark mouse as in window when it enters
     document.addEventListener('mouseenter', () => {
       mouseInWindow = true;
+    });
+
+    // Add listener to overlay as well to catch mouse leaving while overlay is visible
+    overlay.addEventListener('mouseleave', () => {
+      mouseInWindow = false;
     });
 
     // Disable right-click
