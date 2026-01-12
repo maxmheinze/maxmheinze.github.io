@@ -17,3 +17,9 @@ description: Economics PhD Student @ WU Vienna
 **Module 3: Threats to Causal Identification** · [View Slides](assets/3_threats.html)
 
 **Module 4: Instrumental Variables** · [View Slides](assets/4_iv.html)
+
+**Module 5: Non-Linear Models and Maximum Likelihood** · [View Slides](assets/5_non_linear.html)
+
+**Module 6: More Identification Strategies** · [View Slides](assets/6_more.html)
+
+_Note that the first part of Slide Set 2, as well as Slide Sets 3 and 5 were created by [Sannah Tijani](https://sannahtijani.github.io).
