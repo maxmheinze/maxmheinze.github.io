@@ -31,11 +31,11 @@ Econometrics II (B.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.
 
 - Winter Semester 2025/26
 
-Econometrics III / Applied Econometrics (B.Sc. level, as co-lecturer)
+Econometrics III / Applied Econometrics (B.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?C=L;LV=3;S=26S;L2=S;T=;I=4352;L=;L3=S;U=H;LANG=EN) · [💻 View Slides](econometrics-iii.md)
 
 - Summer Semester 2026
 
-Development Economics: Research & Policy Seminar (M.Sc. level, as co-lecturer)
+Development Economics: Research & Policy Seminar (M.Sc. level, as co-lecturer) · [View Syllabus](https://vvz.wu.ac.at/cgi-bin/vvz.pl?L=;L3=S;C=L;T=;LV=3;I=6320;S=26S;L2=S;U=H;LANG=EN)
 
 - Summer Semester 2026
 
