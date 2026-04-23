@@ -268,9 +268,11 @@ function syllableWithDiacritic(syl, t) {
 
 function parseSyllables(pron) {
   const parts = [];
+  // Normalize // separators used in some Pleco entries (e.g. shui4//jiao4)
+  const cleaned = pron.replace(/\/\//g, '');
   const re = /([a-züv:]+)([0-5])/gi;
   let m;
-  while ((m = re.exec(pron)) !== null)
+  while ((m = re.exec(cleaned)) !== null)
     parts.push({ syl: m[1].toLowerCase(), tone: parseInt(m[2]) });
   return parts;
 }
@@ -769,26 +771,44 @@ function matchesSearch(card, q) {
 }
 
 function buildCharCards() {
-  const charMap = new Map();
+  // Deduplicate by hanzi+pinyin so polyphonic chars (多音字) appear once per reading
+  const seen = new Set(); // key: hanzi + '|' + plainPinyin
+  const cards = [];
+
+  function addCharCard(ch, pin, tone, definition, cleanDef, category) {
+    const key = ch + '|' + plainPinyin(pin);
+    if (seen.has(key)) return;
+    seen.add(key);
+    cards.push({
+      hanzi: ch, displayPinyin: pin,
+      tone, charTones: [tone],
+      cleanDef, definition,
+      category,
+      radical: RADICAL_DB[ch] || null,
+    });
+  }
+
+  // Pass 1: single-character entries (most authoritative)
+  allCards.forEach(card => {
+    if ([...card.hanzi].length !== 1) return;
+    addCharCard(card.hanzi, card.displayPinyin, card.tone,
+                card.definition, card.cleanDef, card.category);
+  });
+
+  // Pass 2: extract from multi-character words — adds new readings not yet seen
   allCards.forEach(card => {
     const chars = [...card.hanzi];
-    const syls  = parseSyllables(card.pronRaw);
+    if (chars.length === 1) return;
+    const syls = parseSyllables(card.pronRaw);
     chars.forEach((ch, i) => {
-      if (charMap.has(ch)) return;
       const syl  = syls[i];
       const tone = syl ? syl.tone : 5;
       const pin  = syl ? syllableWithDiacritic(syl.syl, syl.tone) : '';
-      charMap.set(ch, {
-        hanzi: ch, displayPinyin: pin,
-        pronRaw: syl ? (syl.syl + syl.tone) : '',
-        tone, charTones: [tone],
-        cleanDef: '', definition: card.definition,
-        category: card.category,
-        radical: RADICAL_DB[ch] || null,
-      });
+      addCharCard(ch, pin, tone, card.definition, card.cleanDef, card.category);
     });
   });
-  return [...charMap.values()];
+
+  return cards;
 }
 
 function getFiltered() {
