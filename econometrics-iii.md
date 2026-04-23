@@ -10,7 +10,7 @@ description: Economics PhD Student @ WU Vienna
 
 **Module 0: Formalities** · [View Slides](assets/0_formalities_thursday.html)
 
-**Module 1: Time Series and Autocorrelation** · [View Slides](assets/ts_auto.html)
+**Module 1: Time Series and Autocorrelation** · [View Slides](assets/1_ts_auto.html)
 
 **Module 2: Panel Data and Further Issues** · [View Slides](assets/2_panel.html)
 
