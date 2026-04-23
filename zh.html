@@ -878,6 +878,9 @@ function getFiltered() {
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function render() {
+  // Don't render until a file has been loaded
+  if (allCards.length === 0) return;
+
   const cards = getFiltered();
   const grid  = document.getElementById('grid');
   document.getElementById('count-label').textContent =
