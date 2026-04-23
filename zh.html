@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汉字 Flashcard Browser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KaiTi&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f2f0;
+    --surface: #fafafa;
+    --border: #ddd;
+    --text: #222;
+    --text-dim: #888;
+    --radius: 14px;
+    --shadow: 0 2px 10px rgba(0,0,0,0.08);
+    --tone1: #2d7a3a;
+    --tone2: #c0392b;
+    --tone3: #c07000;
+    --tone4: #1a5fa0;
+    --tone5: #999;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px 10px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 12px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  h1 {
+    font-family: 'ZCOOL KaiTi', serif; font-size: 1.3rem; font-weight: 400;
+    color: var(--text-dim); letter-spacing: 0.08em; white-space: nowrap; flex-shrink: 0;
+  }
+  .search-wrap { flex: 1; display: flex; gap: 8px; }
+  #search {
+    flex: 1; padding: 8px 16px;
+    border: 1.5px solid var(--border); border-radius: 30px;
+    font-family: 'Inter', sans-serif; font-size: 0.92rem;
+    background: var(--bg); color: var(--text); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #search:focus { border-color: #aaa; box-shadow: 0 0 0 3px rgba(0,0,0,0.07); }
+  #search::placeholder { color: var(--text-dim); }
+  #filter-btn {
+    padding: 8px 18px; border: 1.5px solid var(--border); border-radius: 30px;
+    background: var(--surface); font-family: 'Inter', sans-serif; font-size: 0.88rem;
+    cursor: pointer; color: var(--text); transition: all 0.18s; white-space: nowrap;
+  }
+  #filter-btn:hover { background: #eee; }
+  #filter-btn.active { background: #555; color: #fff; border-color: #555; }
+
+  .controls-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    max-width: 1200px; margin: 8px auto 0; flex-wrap: wrap;
+  }
+  .toggle-group {
+    display: flex; border: 1.5px solid var(--border); border-radius: 20px;
+    overflow: hidden; background: var(--bg); flex-shrink: 0;
+  }
+  .toggle-group button {
+    padding: 4px 16px; border: none; background: transparent;
+    font-family: 'Inter', sans-serif; font-size: 0.82rem;
+    cursor: pointer; color: var(--text-dim); transition: all 0.18s;
+  }
+  .toggle-group button.active { background: #555; color: #fff; font-weight: 500; }
+
+  .sort-select {
+    padding: 4px 10px; border: 1.5px solid var(--border); border-radius: 20px;
+    background: var(--surface); font-family: 'Inter', sans-serif; font-size: 0.82rem;
+    color: var(--text-dim); cursor: pointer; outline: none; appearance: none;
+    -webkit-appearance: none; padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+  .sort-select:focus { border-color: #aaa; }
+
+  .count-label { font-size: 0.8rem; color: var(--text-dim); margin-left: auto; align-self: center; }
+
+  /* Filter panel */
+  #filter-panel {
+    display: none; max-width: 1200px; margin: 0 auto;
+    padding: 8px 0 2px; flex-wrap: wrap; gap: 8px; align-items: flex-start;
+  }
+  #filter-panel.open { display: flex; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; width: 100%; }
+  .filter-label {
+    font-size: 0.73rem; color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.07em; flex-shrink: 0; width: 68px;
+  }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    padding: 3px 11px; border-radius: 14px; border: 1.5px solid var(--border);
+    background: var(--surface); font-family: 'Inter', sans-serif;
+    font-size: 0.77rem; cursor: pointer; transition: all 0.15s; color: var(--text-dim);
+  }
+  .chip:hover { border-color: #aaa; color: var(--text); }
+  .chip.selected { color: #fff; }
+  .chip.t1.selected { background: var(--tone1); border-color: var(--tone1); }
+  .chip.t2.selected { background: var(--tone2); border-color: var(--tone2); }
+  .chip.t3.selected { background: var(--tone3); border-color: var(--tone3); }
+  .chip.t4.selected { background: var(--tone4); border-color: var(--tone4); }
+  .chip.t5.selected { background: var(--tone5); border-color: var(--tone5); }
+  .chip.cat.selected, .chip.rad.selected { background: #555; border-color: #555; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 20px 60px; }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 14px;
+  }
+
+  /* Card */
+  .card-wrap { perspective: 800px; cursor: pointer; }
+  .card-inner {
+    position: relative; width: 100%; padding-top: 115%;
+    transform-style: preserve-3d;
+    transition: transform 0.42s cubic-bezier(0.4, 0.2, 0.2, 1);
+    border-radius: var(--radius);
+  }
+  .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute; inset: 0; border-radius: var(--radius);
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 14px 10px 12px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    box-shadow: var(--shadow); transition: box-shadow 0.2s;
+  }
+  .card-wrap:hover .card-face { box-shadow: 0 4px 18px rgba(0,0,0,0.13); }
+  .card-back { transform: rotateY(180deg); justify-content: center; overflow: hidden; }
+
+  .char-big {
+    font-family: 'ZCOOL KaiTi', serif; font-size: 2.6rem; line-height: 1.1;
+    font-weight: 400; text-align: center; color: var(--tone5);
+  }
+  .char-big .tc1 { color: var(--tone1); }
+  .char-big .tc2 { color: var(--tone2); }
+  .char-big .tc3 { color: var(--tone3); }
+  .char-big .tc4 { color: var(--tone4); }
+  .char-big .tc5 { color: var(--tone5); }
+
+  .pinyin {
+    font-family: 'Inter', sans-serif; font-size: 0.76rem;
+    color: var(--text-dim); margin-top: 7px; text-align: center;
+    /* fix tone-mark spacing: use normal letter-spacing, rely on font kerning */
+    letter-spacing: 0;
+  }
+
+  .back-content {
+    font-family: 'Inter', sans-serif; font-size: 0.73rem; color: var(--text);
+    line-height: 1.55; text-align: center; overflow-y: auto;
+    max-height: 100%; padding: 4px 8px; width: 100%;
+  }
+  .back-char { font-family: 'ZCOOL KaiTi', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 3px; }
+  .back-pinyin { font-size: 0.76rem; color: var(--text-dim); margin-bottom: 5px; }
+  .back-english { font-size: 0.78rem; font-weight: 500; color: var(--text); line-height: 1.5; }
+  .back-radical { font-size: 0.71rem; color: var(--text-dim); margin-top: 6px; line-height: 1.45; }
+
+  .no-results {
+    grid-column: 1/-1; text-align: center; color: var(--text-dim);
+    padding: 60px 20px; font-size: 0.95rem;
+  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <h1>汉字卡片</h1>
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Search pinyin, Chinese, or English…" autocomplete="off" spellcheck="false">
+      <button id="filter-btn" onclick="toggleFilter()">⚙ Filter</button>
+    </div>
+  </div>
+  <div class="controls-row">
+    <div class="toggle-group">
+      <button id="btn-words" class="active" onclick="setMode('words')">Words</button>
+      <button id="btn-chars" onclick="setMode('chars')">Characters</button>
+    </div>
+    <select class="sort-select" id="sort-select" onchange="render()">
+      <option value="default">Default order</option>
+      <option value="pinyin">Sort by pinyin</option>
+      <option value="radical">Sort by radical</option>
+      <option value="category">Sort by category</option>
+    </select>
+    <span class="count-label" id="count-label"></span>
+  </div>
+  <div id="filter-panel">
+    <div class="filter-row">
+      <span class="filter-label">Tone</span>
+      <div class="filter-chips">
+        <button class="chip t1" data-filter="tone" data-val="1" onclick="toggleChip(this)">1st ─</button>
+        <button class="chip t2" data-filter="tone" data-val="2" onclick="toggleChip(this)">2nd ↗</button>
+        <button class="chip t3" data-filter="tone" data-val="3" onclick="toggleChip(this)">3rd ↘↗</button>
+        <button class="chip t4" data-filter="tone" data-val="4" onclick="toggleChip(this)">4th ↘</button>
+        <button class="chip t5" data-filter="tone" data-val="5" onclick="toggleChip(this)">Neutral</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Radical</span>
+      <div class="filter-chips" id="radical-chips"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Category</span>
+      <div class="filter-chips" id="category-chips"></div>
+    </div>
+  </div>
+</header>
+<main><div id="grid"></div></main>
+
+<script>
+// ── Pinyin / diacritic helpers ────────────────────────────────────────────────
+const DIACRITICS = {
+  a:['ā','á','ǎ','à','a'], e:['ē','é','ě','è','e'],
+  i:['ī','í','ǐ','ì','i'], o:['ō','ó','ǒ','ò','o'],
+  u:['ū','ú','ǔ','ù','u'], ü:['ǖ','ǘ','ǚ','ǜ','ü'],
+};
+
+function syllableWithDiacritic(syl, t) {
+  syl = syl.replace(/v/g,'ü').replace(/u:/g,'ü');
+  if (t === 5 || t === 0) return syl;
+  // Tone mark placement rules: a/e first; then ou→o; then last vowel
+  const priority = ['a','e','ou','o','i','u','ü'];
+  for (const seq of priority) {
+    if (!syl.includes(seq)) continue;
+    // mark the last vowel of the matching sequence
+    const v = seq[seq.length - 1];
+    const idx = syl.lastIndexOf(v);
+    if (idx === -1) continue;
+    const rep = DIACRITICS[v]?.[t - 1];
+    if (!rep) continue;
+    return syl.slice(0, idx) + rep + syl.slice(idx + 1);
+  }
+  return syl;
+}
+
+function parseSyllables(pron) {
+  const parts = [];
+  const re = /([a-züv:]+)([0-5])/gi;
+  let m;
+  while ((m = re.exec(pron)) !== null)
+    parts.push({ syl: m[1].toLowerCase(), tone: parseInt(m[2]) });
+  return parts;
+}
+
+function sylsToDisplay(syls) {
+  // Join with zero-width space so diacritics don't crowd each other
+  return syls.map(p => syllableWithDiacritic(p.syl, p.tone)).join('');
+}
+
+function dominantTone(syls) {
+  for (const p of syls) if (p.tone > 0 && p.tone < 5) return p.tone;
+  return 5;
+}
+
+// ── Definition cleaner ────────────────────────────────────────────────────────
+// Keep POS labels + numbered English meanings; strip CJK and trailing latin examples
+function cleanDefinition(raw) {
+  if (!raw) return '';
+  let text = raw;
+  // Remove CJK characters plus any following latin example text
+  // (example text ends before: a digit, a POS keyword, newline, or end of string)
+  text = text.replace(
+    /[\u4e00-\u9fff\u3400-\u4dbf\uff00-\uffef\u3000-\u303f\u00b7\u2014]+[^\n0-9]*?(?=\s*(?:[0-9](?:\s|$)|noun|verb|adj|adv|meas|prep|aux|pron|affix|conj|inter|\n|$))/g,
+    ' '
+  );
+  text = text.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+  // Remove trailing junk
+  text = text.replace(/[\s;,.(]+$/, '');
+  // Remove orphaned parentheses like "(opp." at end
+  text = text.replace(/\(opp\.$/, '').trim();
+  return text;
+}
+
+// ── Radical database ──────────────────────────────────────────────────────────
+const RADICAL_DB = {
+  '一':['一','yī','one'],'七':['一','yī','one'],'万':['一','yī','one'],
+  '三':['一','yī','one'],'不':['一','yī','one'],'下':['一','yī','one'],
+  '上':['一','yī','one'],'二':['二','èr','two'],'五':['二','èr','two'],
+  '人':['人','rén','person'],'个':['人','rén','person'],'今':['人','rén','person'],
+  '介':['人','rén','person'],'从':['人','rén','person'],'他':['人','rén','person'],
+  '以':['人','rén','person'],'们':['人','rén','person'],'件':['人','rén','person'],
+  '休':['人','rén','person'],'众':['人','rén','person'],'会':['人','rén','person'],
+  '位':['人','rén','person'],'住':['人','rén','person'],'体':['人','rén','person'],
+  '作':['人','rén','person'],'你':['人','rén','person'],'便':['人','rén','person'],
+  '保':['人','rén','person'],'信':['人','rén','person'],'候':['人','rén','person'],
+  '借':['人','rén','person'],'做':['人','rén','person'],'什':['人','rén','person'],
+  '备':['人','rén','person'],'舍':['人','rén','person'],
+  '儿':['儿','ér','legs'],'先':['儿','ér','legs'],'元':['儿','ér','legs'],
+  '克':['儿','ér','legs'],
+  '入':['入','rù','enter'],'全':['入','rù','enter'],
+  '八':['八','bā','eight'],'公':['八','bā','eight'],'六':['八','bā','eight'],
+  '共':['八','bā','eight'],'典':['八','bā','eight'],'兴':['八','bā','eight'],
+  '关':['八','bā','eight'],
+  '刀':['刀','dāo','knife'],'分':['刀','dāo','knife'],'刻':['刀','dāo','knife'],
+  '利':['刀','dāo','knife'],'别':['刀','dāo','knife'],'到':['刀','dāo','knife'],
+  '剩':['刀','dāo','knife'],
+  '力':['力','lì','strength'],'动':['力','lì','strength'],'务':['力','lì','strength'],
+  '加':['力','lì','strength'],'努':['力','lì','strength'],'劳':['力','lì','strength'],
+  '十':['十','shí','ten'],'千':['十','shí','ten'],'午':['十','shí','ten'],
+  '半':['十','shí','ten'],
+  '卖':['士','shì','scholar'],
+  '厕':['厂','hǎn','cliff'],'厨':['厂','hǎn','cliff'],
+  '友':['又','yòu','right hand'],'发':['又','yòu','right hand'],
+  '口':['口','kǒu','mouth'],'右':['口','kǒu','mouth'],'只':['口','kǒu','mouth'],
+  '叫':['口','kǒu','mouth'],'可':['口','kǒu','mouth'],'台':['口','kǒu','mouth'],
+  '号':['口','kǒu','mouth'],'司':['口','kǒu','mouth'],'吃':['口','kǒu','mouth'],
+  '合':['口','kǒu','mouth'],'同':['口','kǒu','mouth'],'名':['口','kǒu','mouth'],
+  '向':['口','kǒu','mouth'],'吗':['口','kǒu','mouth'],'吧':['口','kǒu','mouth'],
+  '告':['口','kǒu','mouth'],'呢':['口','kǒu','mouth'],'和':['口','kǒu','mouth'],
+  '咖':['口','kǒu','mouth'],'咱':['口','kǒu','mouth'],'咳':['口','kǒu','mouth'],
+  '哥':['口','kǒu','mouth'],'哪':['口','kǒu','mouth'],'啊':['口','kǒu','mouth'],
+  '啡':['口','kǒu','mouth'],'啤':['口','kǒu','mouth'],'喂':['口','kǒu','mouth'],
+  '喊':['口','kǒu','mouth'],'喜':['口','kǒu','mouth'],'喝':['口','kǒu','mouth'],
+  '嗓':['口','kǒu','mouth'],'嗽':['口','kǒu','mouth'],'回':['口','kǒu','mouth'],
+  '后':['口','kǒu','mouth'],'周':['口','kǒu','mouth'],
+  '四':['囗','wéi','enclosure'],'国':['囗','wéi','enclosure'],'图':['囗','wéi','enclosure'],
+  '园':['囗','wéi','enclosure'],
+  '土':['土','tǔ','earth'],'在':['土','tǔ','earth'],'地':['土','tǔ','earth'],
+  '场':['土','tǔ','earth'],'坐':['土','tǔ','earth'],'块':['土','tǔ','earth'],
+  '堂':['土','tǔ','earth'],'墙':['土','tǔ','earth'],
+  '多':['夕','xī','evening'],'外':['夕','xī','evening'],
+  '大':['大','dà','big'],'天':['大','dà','big'],'太':['大','dà','big'],
+  '夫':['大','dà','big'],'夹':['大','dà','big'],'奥':['大','dà','big'],
+  '头':['大','dà','big'],
+  '女':['女','nǚ','woman'],'奶':['女','nǚ','woman'],'她':['女','nǚ','woman'],
+  '好':['女','nǚ','woman'],'妈':['女','nǚ','woman'],'妹':['女','nǚ','woman'],
+  '姐':['女','nǚ','woman'],'姓':['女','nǚ','woman'],
+  '子':['子','zǐ','child'],'孩':['子','zǐ','child'],'学':['子','zǐ','child'],
+  '孙':['子','zǐ','child'],'字':['子','zǐ','child'],
+  '定':['宀','mián','roof'],'客':['宀','mián','roof'],'室':['宀','mián','roof'],
+  '家':['宀','mián','roof'],'宿':['宀','mián','roof'],'寄':['宀','mián','roof'],
+  '小':['小','xiǎo','small'],'少':['小','xiǎo','small'],
+  '屋':['尸','shī','body'],'属':['尸','shī','body'],'层':['尸','shī','body'],
+  '局':['尸','shī','body'],
+  '山':['山','shān','mountain'],'岁':['山','shān','mountain'],
+  '工':['工','gōng','work'],'左':['工','gōng','work'],'差':['工','gōng','work'],
+  '己':['己','jǐ','self'],
+  '市':['巾','jīn','cloth'],'师':['巾','jīn','cloth'],'常':['巾','jīn','cloth'],
+  '帮':['巾','jīn','cloth'],'币':['巾','jīn','cloth'],
+  '床':['广','guǎng','shelter'],'店':['广','guǎng','shelter'],'度':['广','guǎng','shelter'],
+  '座':['广','guǎng','shelter'],'庭':['广','guǎng','shelter'],
+  '弟':['弓','gōng','bow'],'张':['弓','gōng','bow'],
+  '往':['彳','chì','step'],'很':['彳','chì','step'],'得':['彳','chì','step'],
+  '德':['彳','chì','step'],'复':['彳','chì','step'],
+  '心':['心','xīn','heart'],'忙':['心','xīn','heart'],'快':['心','xīn','heart'],
+  '怎':['心','xīn','heart'],'思':['心','xīn','heart'],'息':['心','xīn','heart'],
+  '想':['心','xīn','heart'],'意':['心','xīn','heart'],'感':['心','xīn','heart'],
+  '慢':['心','xīn','heart'],'您':['心','xīn','heart'],'惯':['心','xīn','heart'],
+  '情':['心','xīn','heart'],'忘':['心','xīn','heart'],'怕':['心','xīn','heart'],
+  '爱':['心','xīn','heart'],
+  '手':['手','shǒu','hand'],'打':['手','shǒu','hand'],'找':['手','shǒu','hand'],
+  '把':['手','shǒu','hand'],'报':['手','shǒu','hand'],'拐':['手','shǒu','hand'],
+  '拳':['手','shǒu','hand'],'拼':['手','shǒu','hand'],'拿':['手','shǒu','hand'],
+  '挑':['手','shǒu','hand'],'挤':['手','shǒu','hand'],'挺':['手','shǒu','hand'],
+  '换':['手','shǒu','hand'],'操':['手','shǒu','hand'],'接':['手','shǒu','hand'],
+  '推':['手','shǒu','hand'],'提':['手','shǒu','hand'],'扶':['手','shǒu','hand'],
+  '搬':['手','shǒu','hand'],
+  '支':['支','zhī','branch'],
+  '斤':['斤','jīn','catty'],
+  '方':['方','fāng','square'],'旁':['方','fāng','square'],
+  '日':['日','rì','sun/day'],'早':['日','rì','sun/day'],'时':['日','rì','sun/day'],
+  '明':['日','rì','sun/day'],'星':['日','rì','sun/day'],'昨':['日','rì','sun/day'],
+  '是':['日','rì','sun/day'],'晚':['日','rì','sun/day'],'更':['日','rì','sun/day'],
+  '最':['日','rì','sun/day'],'晴':['日','rì','sun/day'],
+  '月':['月','yuè','moon/month'],'有':['月','yuè','moon/month'],
+  '朋':['月','yuè','moon/month'],'服':['月','yuè','moon/month'],
+  '期':['月','yuè','moon/month'],
+  '脸':['肉','ròu','flesh'],'脚':['肉','ròu','flesh'],'肥':['肉','ròu','flesh'],
+  '胖':['肉','ròu','flesh'],'育':['肉','ròu','flesh'],'能':['肉','ròu','flesh'],
+  '脑':['肉','ròu','flesh'],'肉':['肉','ròu','flesh'],
+  '木':['木','mù','tree/wood'],'本':['木','mù','tree/wood'],'机':['木','mù','tree/wood'],
+  '条':['木','mù','tree/wood'],'来':['木','mù','tree/wood'],'杯':['木','mù','tree/wood'],
+  '极':['木','mù','tree/wood'],'果':['木','mù','tree/wood'],'架':['木','mù','tree/wood'],
+  '柜':['木','mù','tree/wood'],'查':['木','mù','tree/wood'],'校':['木','mù','tree/wood'],
+  '样':['木','mù','tree/wood'],'根':['木','mù','tree/wood'],'桌':['木','mù','tree/wood'],
+  '棋':['木','mù','tree/wood'],'椅':['木','mù','tree/wood'],'楼':['木','mù','tree/wood'],
+  '概':['木','mù','tree/wood'],'末':['木','mù','tree/wood'],'东':['木','mù','tree/wood'],
+  '欢':['欠','qiàn','yawn'],'欧':['欠','qiàn','yawn'],
+  '步':['止','zhǐ','foot'],'比':['比','bǐ','compare'],'毕':['比','bǐ','compare'],
+  '毛':['毛','máo','fur'],'毯':['毛','máo','fur'],
+  '气':['气','qì','air'],
+  '水':['水','shuǐ','water'],'汉':['水','shuǐ','water'],'汽':['水','shuǐ','water'],
+  '没':['水','shuǐ','water'],'油':['水','shuǐ','water'],'法':['水','shuǐ','water'],
+  '泳':['水','shuǐ','water'],'洗':['水','shuǐ','water'],'流':['水','shuǐ','water'],
+  '济':['水','shuǐ','water'],'浴':['水','shuǐ','water'],'涕':['水','shuǐ','water'],
+  '温':['水','shuǐ','water'],'游':['水','shuǐ','water'],'澡':['水','shuǐ','water'],
+  '海':['水','shuǐ','water'],'河':['水','shuǐ','water'],'清':['水','shuǐ','water'],
+  '火':['火','huǒ','fire'],'灯':['火','huǒ','fire'],'炒':['火','huǒ','fire'],
+  '点':['火','huǒ','fire'],'烧':['火','huǒ','fire'],'热':['火','huǒ','fire'],
+  '然':['火','huǒ','fire'],'照':['火','huǒ','fire'],
+  '片':['片','piàn','slice'],
+  '物':['牛','niú','cow'],
+  '狗':['犬','quǎn','dog'],
+  '玩':['玉','yù','jade'],'现':['玉','yù','jade'],'班':['玉','yù','jade'],'球':['玉','yù','jade'],
+  '生':['生','shēng','life'],
+  '用':['用','yòng','use'],
+  '男':['田','tián','field'],'画':['田','tián','field'],
+  '疼':['疒','nè','illness'],'病':['疒','nè','illness'],'瘦':['疒','nè','illness'],
+  '白':['白','bái','white'],'百':['白','bái','white'],'的':['白','bái','white'],
+  '盏':['皿','mǐn','vessel'],
+  '目':['目','mù','eye'],'看':['目','mù','eye'],'真':['目','mù','eye'],
+  '睡':['目','mù','eye'],'留':['目','mù','eye'],'直':['目','mù','eye'],
+  '知':['矢','shǐ','arrow'],'短':['矢','shǐ','arrow'],'矮':['矢','shǐ','arrow'],
+  '石':['石','shí','stone'],'码':['石','shí','stone'],'硬':['石','shí','stone'],
+  '礼':['示','shì','spirit'],'祝':['示','shì','spirit'],'票':['示','shì','spirit'],
+  '视':['示','shì','spirit'],
+  '租':['禾','hé','grain'],
+  '空':['穴','xué','cave'],'窗':['穴','xué','cave'],
+  '立':['立','lì','stand'],'站':['立','lì','stand'],
+  '竹':['竹','zhú','bamboo'],'笔':['竹','zhú','bamboo'],'第':['竹','zhú','bamboo'],
+  '等':['竹','zhú','bamboo'],'筷':['竹','zhú','bamboo'],'篮':['竹','zhú','bamboo'],
+  '米':['米','mǐ','rice'],
+  '系':['糸','sī','thread'],'红':['糸','sī','thread'],'级':['糸','sī','thread'],
+  '纸':['糸','sī','thread'],'线':['糸','sī','thread'],'练':['糸','sī','thread'],
+  '绍':['糸','sī','thread'],'经':['糸','sī','thread'],'给':['糸','sī','thread'],
+  '绿':['糸','sī','thread'],
+  '网':['网','wǎng','net'],
+  '老':['老','lǎo','old'],'考':['老','lǎo','old'],'者':['老','lǎo','old'],
+  '聊':['耳','ěr','ear'],
+  '自':['自','zì','self'],
+  '舒':['舌','shé','tongue'],
+  '般':['舟','zhōu','boat'],'舱':['舟','zhōu','boat'],
+  '色':['色','sè','color'],
+  '节':['艹','cǎo','plant'],'花':['艹','cǎo','plant'],'英':['艹','cǎo','plant'],
+  '苹':['艹','cǎo','plant'],'茶':['艹','cǎo','plant'],'药':['艹','cǎo','plant'],
+  '菜':['艹','cǎo','plant'],'萄':['艹','cǎo','plant'],'葡':['艹','cǎo','plant'],
+  '蓝':['艹','cǎo','plant'],'蔬':['艹','cǎo','plant'],'蕉':['艹','cǎo','plant'],
+  '蛋':['虫','chóng','insect'],'虫':['虫','chóng','insect'],
+  '行':['行','xíng','walk'],
+  '衣':['衣','yī','clothing'],'西':['衣','yī','clothing'],
+  '见':['见','jiàn','see'],'觉':['见','jiàn','see'],
+  '角':['角','jiǎo','horn'],
+  '言':['言','yán','speech'],'认':['言','yán','speech'],'让':['言','yán','speech'],
+  '识':['言','yán','speech'],'诉':['言','yán','speech'],'词':['言','yán','speech'],
+  '试':['言','yán','speech'],'话':['言','yán','speech'],'语':['言','yán','speech'],
+  '说':['言','yán','speech'],'请':['言','yán','speech'],'读':['言','yán','speech'],
+  '课':['言','yán','speech'],'谁':['言','yán','speech'],'谢':['言','yán','speech'],
+  '走':['走','zǒu','walk'],'起':['走','zǒu','walk'],'超':['走','zǒu','walk'],
+  '赛':['走','zǒu','walk'],
+  '足':['足','zú','foot'],'跑':['足','zú','foot'],'跟':['足','zú','foot'],
+  '路':['足','zú','foot'],'踢':['足','zú','foot'],
+  '身':['身','shēn','body'],
+  '车':['车','chē','vehicle'],'轻':['车','chē','vehicle'],'辆':['车','chē','vehicle'],
+  '输':['车','chē','vehicle'],
+  '边':['辶','chuò','walk'],'过':['辶','chuò','walk'],'迎':['辶','chuò','walk'],
+  '运':['辶','chuò','walk'],'近':['辶','chuò','walk'],'还':['辶','chuò','walk'],
+  '这':['辶','chuò','walk'],'进':['辶','chuò','walk'],'远':['辶','chuò','walk'],
+  '送':['辶','chuò','walk'],'适':['辶','chuò','walk'],'通':['辶','chuò','walk'],
+  '逛':['辶','chuò','walk'],'道':['辶','chuò','walk'],
+  '那':['阝','yì','city'],'邮':['阝','yì','city'],'都':['阝','yì','city'],
+  '院':['阝','yì','city'],'附':['阝','yì','city'],'难':['阝','yì','city'],
+  '酒':['酉','yǒu','wine jug'],'醋':['酉','yǒu','wine jug'],
+  '里':['里','lǐ','village'],'重':['里','lǐ','village'],'量':['里','lǐ','village'],
+  '金':['金','jīn','metal'],'针':['金','jīn','metal'],'钟':['金','jīn','metal'],
+  '铁':['金','jīn','metal'],'银':['金','jīn','metal'],'错':['金','jīn','metal'],
+  '长':['长','cháng','long'],
+  '门':['门','mén','gate'],'问':['门','mén','gate'],'间':['门','mén','gate'],
+  '零':['雨','yǔ','rain'],'雨':['雨','yǔ','rain'],
+  '青':['青','qīng','blue-green'],
+  '非':['非','fēi','wrong'],
+  '面':['面','miàn','face'],
+  '音':['音','yīn','sound'],
+  '页':['页','yè','page'],'颗':['页','yè','page'],'题':['页','yè','page'],'颜':['页','yè','page'],
+  '食':['食','shí','food'],'饭':['食','shí','food'],'饱':['食','shí','food'],
+  '饺':['食','shí','food'],'饿':['食','shí','food'],'馆':['食','shí','food'],'馍':['食','shí','food'],
+  '香':['香','xiāng','fragrant'],
+  '马':['马','mǎ','horse'],'骑':['马','mǎ','horse'],
+  '高':['高','gāo','tall'],
+  '黄':['黄','huáng','yellow'],
+  '黑':['黑','hēi','black'],
+  '鼻':['鼻','bí','nose'],
+  // misc
+  '业':['一','yī','one'],'两':['一','yī','one'],
+  '么':['幺','yāo','tiny'],
+  '乐':['丿','piě','slash'],
+  '乒':['乙','yǐ','second'],'乓':['乙','yǐ','second'],'九':['乙','yǐ','second'],
+  '也':['乙','yǐ','second'],'习':['乙','yǐ','second'],'书':['乙','yǐ','second'],
+  '了':['乙','yǐ','second'],'买':['乙','yǐ','second'],
+  '事':['亅','jué','hook'],
+  '些':['二','èr','two'],
+  '交':['亠','tóu','top'],
+  '再':['冂','jiōng','border'],'冒':['冂','jiōng','border'],
+  '写':['冖','mì','cover'],
+  '准':['冫','bīng','ice'],
+  '几':['几','jǐ','small table'],
+  '出':['凵','qū','container'],
+  '包':['勺','sháo','spoon'],
+  '北':['匕','bǐ','spoon'],
+  '医':['匚','fāng','box'],
+  '卫':['卩','jié','seal'],
+  '去':['厶','sī','private'],
+  '对':['寸','cùn','inch'],'封':['寸','cùn','inch'],
+  '年':['干','gān','dry'],
+  '开':['廾','gǒng','two hands'],
+  '式':['弋','yì','stake'],
+  '影':['彡','shān','hair'],
+  '我':['戈','gē','spear'],'或':['戈','gē','spear'],
+  '户':['户','hù','door'],'房':['户','hù','door'],'所':['户','hù','door'],
+  '教':['攴','pū','tap'],
+  '民':['氏','shì','clan'],
+  '爸':['父','fù','father'],
+  '每':['母','mǔ','mother'],
+  '爬':['爪','zhǎo','claw'],
+  '盏':['皿','mǐn','vessel'],
+  '离':['禸','róu','track'],
+  '辣':['辛','xīn','bitter'],
+  '象':['豕','shǐ','pig'],
+  '质':['贝','bèi','shell'],'贝':['贝','bèi','shell'],'贵':['贝','bèi','shell'],
+  '费':['贝','bèi','shell'],
+};
+
+// ── State & data ──────────────────────────────────────────────────────────────
+let allCards = [];
+let mode = 'words';
+let searchQ = '';
+let activeTones = new Set();
+let activeCategories = new Set();
+let activeRadicals = new Set();
+
+// ── File loading ──────────────────────────────────────────────────────────────
+function loadXML() {
+  document.getElementById('grid').innerHTML = `
+    <div class="no-results" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:60px 20px;">
+      <div style="font-size:0.98rem;color:var(--text);font-weight:500;">Select your Pleco XML export to load flashcards</div>
+      <label style="cursor:pointer;padding:9px 28px;background:#555;color:#fff;border-radius:30px;
+             font-family:'Inter', sans-serif;font-size:0.9rem;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+        Open XML file
+        <input type="file" accept=".xml,text/xml,application/xml" style="display:none" onchange="handleFile(this)">
+      </label>
+      <div style="font-size:0.76rem;color:var(--text-dim);max-width:320px;line-height:1.65;text-align:center;">
+        Browsers cannot read local files directly — nothing is uploaded anywhere.
+      </div>
+    </div>`;
+}
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => parseXML(e.target.result);
+  reader.onerror = () => {
+    document.getElementById('grid').innerHTML =
+      '<div class="no-results">Could not read the file. Please try again.</div>';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseXML(xmlText) {
+  const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+  allCards = Array.from(doc.querySelectorAll('card')).map(card => {
+    const hw   = card.querySelector('headword[charset="sc"]');
+    const pron = card.querySelector('pron[type="hypy"]');
+    const defn = card.querySelector('defn');
+    const cat  = card.querySelector('catassign');
+
+    const hanzi      = hw   ? hw.textContent.trim()  : '';
+    const pronRaw    = pron ? pron.textContent.trim() : '';
+    const definition = defn ? defn.textContent.trim() : '';
+    const category   = cat  ? (cat.getAttribute('category') || '') : '';
+
+    const syls         = parseSyllables(pronRaw);
+    const displayPinyin = sylsToDisplay(syls);
+    const tone         = dominantTone(syls);
+    const charTones    = syls.map(s => s.tone);
+    while (charTones.length < [...hanzi].length) charTones.push(5);
+
+    const cleanDef = cleanDefinition(definition);
+
+    // Primary radical: from first character of the word
+    const radical = RADICAL_DB[[...hanzi][0]];
+
+    return { hanzi, pronRaw, displayPinyin, tone, charTones, definition, cleanDef, category, radical };
+  }).filter(c => c.hanzi.length > 0);
+
+  initFilters();
+  render();
+}
+
+// ── Filter init ───────────────────────────────────────────────────────────────
+function initFilters() {
+  // Categories
+  const cats = [...new Set(allCards.map(c => c.category).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  const catContainer = document.getElementById('category-chips');
+  catContainer.innerHTML = '';
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'chip cat';
+    btn.dataset.filter = 'category';
+    btn.dataset.val = cat;
+    btn.textContent = cat;
+    btn.title = cat;
+    btn.onclick = function(){ toggleChip(this); };
+    catContainer.appendChild(btn);
+  });
+
+  // Radicals — collect all unique radicals from all chars in words mode
+  const radSet = new Map(); // radical_char → label
+  allCards.forEach(card => {
+    [...card.hanzi].forEach(ch => {
+      const r = RADICAL_DB[ch];
+      if (r) radSet.set(r[0], `${r[0]} ${r[2]}`);
+    });
+  });
+  const radContainer = document.getElementById('radical-chips');
+  radContainer.innerHTML = '';
+  [...radSet.entries()].sort((a,b) => a[0].localeCompare(b[0], 'zh')).forEach(([rad, label]) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip rad';
+    btn.dataset.filter = 'radical';
+    btn.dataset.val = rad;
+    btn.textContent = label;
+    btn.onclick = function(){ toggleChip(this); };
+    radContainer.appendChild(btn);
+  });
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value.toLowerCase();
+  render();
+});
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-words').classList.toggle('active', m === 'words');
+  document.getElementById('btn-chars').classList.toggle('active', m === 'chars');
+  render();
+}
+
+function toggleFilter() {
+  const panel = document.getElementById('filter-panel');
+  const btn   = document.getElementById('filter-btn');
+  panel.classList.toggle('open');
+  btn.classList.toggle('active', panel.classList.contains('open'));
+}
+
+function toggleChip(el) {
+  const f   = el.dataset.filter;
+  const val = el.dataset.val;
+  const set = f === 'tone' ? activeTones : f === 'category' ? activeCategories : activeRadicals;
+  if (set.has(val)) { set.delete(val); el.classList.remove('selected'); }
+  else              { set.add(val);    el.classList.add('selected'); }
+  render();
+}
+
+// ── Data helpers ──────────────────────────────────────────────────────────────
+function matchesSearch(card, q) {
+  if (!q) return true;
+  if (card.hanzi.includes(q)) return true;
+  if (card.displayPinyin.toLowerCase().includes(q)) return true;
+  const plain = card.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if (plain.includes(q)) return true;
+  if (card.definition.toLowerCase().includes(q)) return true;
+  return false;
+}
+
+function buildCharCards() {
+  const charMap = new Map();
+  allCards.forEach(card => {
+    const chars = [...card.hanzi];
+    const syls  = parseSyllables(card.pronRaw);
+    chars.forEach((ch, i) => {
+      if (charMap.has(ch)) return;
+      const syl  = syls[i];
+      const tone = syl ? syl.tone : 5;
+      const pin  = syl ? syllableWithDiacritic(syl.syl, syl.tone) : '';
+      charMap.set(ch, {
+        hanzi: ch, displayPinyin: pin,
+        pronRaw: syl ? (syl.syl + syl.tone) : '',
+        tone, charTones: [tone],
+        cleanDef: '', definition: card.definition,
+        category: card.category,
+        radical: RADICAL_DB[ch] || null,
+      });
+    });
+  });
+  return [...charMap.values()];
+}
+
+function getFiltered() {
+  let cards = mode === 'chars' ? buildCharCards() : allCards;
+
+  if (activeTones.size > 0)
+    cards = cards.filter(c => activeTones.has(String(c.tone)));
+
+  if (activeCategories.size > 0)
+    cards = cards.filter(c => activeCategories.has(c.category));
+
+  if (activeRadicals.size > 0) {
+    cards = cards.filter(c => {
+      const chars = [...c.hanzi];
+      return chars.some(ch => {
+        const r = RADICAL_DB[ch];
+        return r && activeRadicals.has(r[0]);
+      });
+    });
+  }
+
+  if (searchQ)
+    cards = cards.filter(c => matchesSearch(c, searchQ));
+
+  // Sort
+  const sortBy = document.getElementById('sort-select')?.value || 'default';
+  if (sortBy === 'pinyin') {
+    cards = [...cards].sort((a, b) => {
+      const pa = a.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const pb = b.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      return pa.localeCompare(pb, 'en');
+    });
+  } else if (sortBy === 'radical') {
+    cards = [...cards].sort((a, b) => {
+      const ra = (RADICAL_DB[[...a.hanzi][0]] || ['~'])[0];
+      const rb = (RADICAL_DB[[...b.hanzi][0]] || ['~'])[0];
+      return ra.localeCompare(rb, 'zh');
+    });
+  } else if (sortBy === 'category') {
+    cards = [...cards].sort((a, b) => a.category.localeCompare(b.category, 'en'));
+  }
+
+  return cards;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  const cards = getFiltered();
+  const grid  = document.getElementById('grid');
+  document.getElementById('count-label').textContent =
+    `${cards.length} ${mode === 'chars' ? 'characters' : 'words'}`;
+
+  if (cards.length === 0) {
+    grid.innerHTML = '<div class="no-results">No cards match your filters.</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  cards.forEach(card => {
+    const wrap = document.createElement('div');
+    wrap.className = `card-wrap t${card.tone}`;
+    wrap.innerHTML = buildCard(card);
+    wrap.onclick = () => wrap.classList.toggle('flipped');
+    grid.appendChild(wrap);
+  });
+}
+
+function coloredHanzi(hanzi, charTones) {
+  return [...hanzi].map((ch, i) => {
+    const t = (charTones && charTones[i]) ? charTones[i] : 5;
+    return `<span class="tc${t}">${ch}</span>`;
+  }).join('');
+}
+
+function buildCard(card) {
+  const colored = coloredHanzi(card.hanzi, card.charTones);
+
+  const front = `<div class="card-face card-front">
+    <span class="char-big">${colored}</span>
+    ${card.displayPinyin ? `<span class="pinyin">${card.displayPinyin}</span>` : ''}
+  </div>`;
+
+  let backBody = '';
+  if (mode === 'chars') {
+    const r = card.radical;
+    const toneColor = ['','var(--tone1)','var(--tone2)','var(--tone3)','var(--tone4)','var(--tone5)'][card.tone] || 'var(--tone5)';
+    const radHtml = r
+      ? `<div class="back-radical">radical: <strong>${r[0]}</strong> (${r[1]}) — ${r[2]}</div>`
+      : `<div class="back-radical" style="color:#ccc">radical unknown</div>`;
+    backBody = `
+      <div class="back-char" style="color:${toneColor}">${card.hanzi}</div>
+      ${card.displayPinyin ? `<div class="back-pinyin">${card.displayPinyin}</div>` : ''}
+      ${radHtml}`;
+  } else {
+    backBody = `
+      ${card.displayPinyin ? `<div class="back-pinyin">${card.displayPinyin}</div>` : ''}
+      <div class="back-english">${card.cleanDef || '—'}</div>`;
+  }
+
+  return `<div class="card-inner">
+    ${front}
+    <div class="card-face card-back"><div class="back-content">${backBody}</div></div>
+  </div>`;
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadXML();
+</script>
+</body>
+</html>
