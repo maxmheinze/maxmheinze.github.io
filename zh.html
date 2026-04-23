@@ -302,31 +302,42 @@ function dominantTone(syls) {
 }
 
 // ── Definition cleaner ────────────────────────────────────────────────────────
-// Keep POS labels + numbered English meanings; strip CJK and trailing latin examples
+// Keep POS labels + numbered English meanings; strip CJK example sentences but keep inline refs
 function cleanDefinition(raw) {
   if (!raw) return '';
   let text = raw;
-  // Step 1: inside parentheticals like (opp. 外边儿), strip only the CJK, keep the Latin wrapper
-  text = text.replace(/\(([^)]*?)[一-鿿㐀-䶿]+([^)]*?)\)/g, (match, before, after) => {
-    const inner = (before + after).trim();
-    return inner ? '(' + inner + ')' : '';
-  });
-  // Step 2: Remove standalone CJK runs plus any following latin example text
-  // (example text ends before: a digit, a POS keyword, newline, or end of string)
-  text = text.replace(
-    /[一-鿿㐀-䶿＀-￯　-〿·—]+[^
-0-9(]*?(?=\s*(?:[0-9](?:\s|$)|noun|verb|adj|adv|meas|prep|aux|pron|affix|conj|inter|
-|$))/g,
-    ' '
-  );
-  text = text.replace(/
-+/g, ' ').replace(/\s{2,}/g, ' ').trim();
-  // Remove trailing punctuation junk
+  // Split into paren / non-paren segments and clean each differently
+  const parts = [];
+  let i = 0;
+  while (i < text.length) {
+    if (text[i] === '(') {
+      const close = text.indexOf(')', i);
+      if (close === -1) { parts.push({ paren: false, s: text.slice(i) }); break; }
+      parts.push({ paren: true, s: text.slice(i, close + 1) });
+      i = close + 1;
+    } else {
+      const next = text.indexOf('(', i);
+      parts.push({ paren: false, s: next === -1 ? text.slice(i) : text.slice(i, next) });
+      i = next === -1 ? text.length : next;
+    }
+  }
+  const CJK = /[\u4e00-\u9fff\u3400-\u4dbf]+/g;
+  text = parts.map(p => {
+    if (p.paren) {
+      // Inside parens: keep CJK chars, strip any romanization that follows them
+      return p.s.replace(/([\u4e00-\u9fff]+)\s+[a-zA-Z][a-zA-Z\s]*/g, '$1');
+    }
+    // Outside parens: remove CJK runs + trailing latin example up to next boundary
+    return p.s.replace(
+      /[\u4e00-\u9fff\u3400-\u4dbf\uff00-\uffef\u3000-\u303f\u00b7\u2014]+[^\n0-9(;]*?(?=\s*(?:[0-9](?:\s|$)|noun|verb|adj|adv|meas|prep|aux|pron|affix|conj|inter|;|\n|$))/g,
+      ' '
+    );
+  }).join('');
+  text = text.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
   text = text.replace(/[\s;,.]+$/, '');
-  // Remove empty parens
-  text = text.replace(/\(\s*\)/g, '').trim();
   return text;
 }
+
 
 // ── Radical database ──────────────────────────────────────────────────────────
 const RADICAL_DB = {
