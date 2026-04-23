@@ -706,18 +706,66 @@ function toggleChip(el) {
 }
 
 // ── Data helpers ──────────────────────────────────────────────────────────────
-function matchesSearch(card, q) {
-  if (!q) return true;
-  // Chinese characters always match regardless of mode
-  if (card.hanzi.includes(q)) return true;
+
+// Normalize pinyin to plain ASCII (strip diacritics, lowercase)
+function plainPinyin(s) {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+// Check if a card matches a single search token
+function matchesToken(card, token) {
+  // Chinese substring: check all substrings of the hanzi
+  const hasCJK = /[\u4e00-\u9fff]/.test(token);
+  if (hasCJK) {
+    // Match any substring of the hanzi that contains the token,
+    // or the token contains a substring of the hanzi
+    for (let i = 0; i < [...token].length; i++) {
+      for (let j = i + 1; j <= [...token].length; j++) {
+        const sub = [...token].slice(i, j).join('');
+        if (card.hanzi.includes(sub)) return true;
+      }
+    }
+    return false;
+  }
+  // Latin token
   if (searchMode === 'pinyin') {
-    if (card.displayPinyin.toLowerCase().includes(q)) return true;
-    const plain = card.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-    if (plain.includes(q)) return true;
+    const cardPlain = plainPinyin(card.displayPinyin);
+    const tokPlain  = plainPinyin(token);
+    // Exact pinyin syllable match: try matching token against the card's
+    // syllable list (space-separated tokens match individual syllables)
+    if (cardPlain.includes(tokPlain)) return true;
+    // Also try with diacritics
+    if (card.displayPinyin.toLowerCase().includes(token)) return true;
   } else {
-    if (card.definition.toLowerCase().includes(q)) return true;
+    if (card.definition.toLowerCase().includes(token)) return true;
   }
   return false;
+}
+
+function matchesSearch(card, q) {
+  if (!q) return true;
+
+  const hasCJK = /[\u4e00-\u9fff]/.test(q);
+
+  if (hasCJK) {
+    // For Chinese input: every character (or substring) in q must match something in the card
+    // Split q into individual characters and require ALL to appear in card.hanzi
+    const chars = [...q];
+    return chars.every(ch => card.hanzi.includes(ch));
+  }
+
+  if (searchMode === 'pinyin') {
+    // Split on whitespace — each space-separated token must match independently
+    const tokens = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return true;
+    // A card matches if ANY token matches it (union/OR across tokens for multi-syllable query)
+    // This lets "wo hen gaoxing" show all three cards
+    return tokens.some(tok => matchesToken(card, tok));
+  } else {
+    // English mode: split on spaces, ALL tokens must match (AND, for phrase-like search)
+    const tokens = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return tokens.every(tok => card.definition.toLowerCase().includes(tok));
+  }
 }
 
 function buildCharCards() {
