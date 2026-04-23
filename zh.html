@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>汉字 Flashcard Browser</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -22,7 +22,8 @@
     --tone5: #999;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  html { overflow-x: hidden; }
 
   header {
     background: var(--surface);
@@ -30,16 +31,29 @@
     padding: 14px 24px 10px;
     position: sticky; top: 0; z-index: 100;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    /* prevent header from ever being wider than the viewport */
+    width: 100%; box-sizing: border-box; overflow: hidden;
   }
   .header-top {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 8px;
     max-width: 1200px; margin: 0 auto;
+    min-width: 0; /* allow flex children to shrink below content size */
   }
   h1 {
     font-family: 'Kaiti SC', 'Kaiti TC', 'KaiTi', 'STKaiti', '楷体', 'DFKai-SB', 'AR PL UKai CN', sans-serif; font-size: 1.3rem; font-weight: 400;
     color: var(--text-dim); letter-spacing: 0.08em; white-space: nowrap; flex-shrink: 0;
   }
-  .search-wrap { flex: 1; display: flex; gap: 8px; }
+  .search-wrap { flex: 1; display: flex; gap: 6px; min-width: 0; }
+
+  /* On mobile: stack the title above the search row, hide title to save space */
+  @media (max-width: 640px) {
+    header { padding: 10px 12px 8px; }
+    h1 { display: none; }
+    .search-wrap { gap: 5px; }
+    #search { min-width: 0; font-size: 0.88rem; padding: 7px 12px; }
+    #search-mode-toggle button { padding: 4px 10px; font-size: 0.78rem; }
+    #filter-btn { padding: 7px 12px; font-size: 0.82rem; }
+  }
   #search {
     flex: 1; padding: 8px 16px;
     border: 1.5px solid var(--border); border-radius: 30px;
