@@ -306,17 +306,25 @@ function dominantTone(syls) {
 function cleanDefinition(raw) {
   if (!raw) return '';
   let text = raw;
-  // Remove CJK characters plus any following latin example text
+  // Step 1: inside parentheticals like (opp. 外边儿), strip only the CJK, keep the Latin wrapper
+  text = text.replace(/\(([^)]*?)[一-鿿㐀-䶿]+([^)]*?)\)/g, (match, before, after) => {
+    const inner = (before + after).trim();
+    return inner ? '(' + inner + ')' : '';
+  });
+  // Step 2: Remove standalone CJK runs plus any following latin example text
   // (example text ends before: a digit, a POS keyword, newline, or end of string)
   text = text.replace(
-    /[\u4e00-\u9fff\u3400-\u4dbf\uff00-\uffef\u3000-\u303f\u00b7\u2014]+[^\n0-9]*?(?=\s*(?:[0-9](?:\s|$)|noun|verb|adj|adv|meas|prep|aux|pron|affix|conj|inter|\n|$))/g,
+    /[一-鿿㐀-䶿＀-￯　-〿·—]+[^
+0-9(]*?(?=\s*(?:[0-9](?:\s|$)|noun|verb|adj|adv|meas|prep|aux|pron|affix|conj|inter|
+|$))/g,
     ' '
   );
-  text = text.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
-  // Remove trailing junk
-  text = text.replace(/[\s;,.(]+$/, '');
-  // Remove orphaned parentheses like "(opp." at end
-  text = text.replace(/\(opp\.$/, '').trim();
+  text = text.replace(/
++/g, ' ').replace(/\s{2,}/g, ' ').trim();
+  // Remove trailing punctuation junk
+  text = text.replace(/[\s;,.]+$/, '');
+  // Remove empty parens
+  text = text.replace(/\(\s*\)/g, '').trim();
   return text;
 }
 
