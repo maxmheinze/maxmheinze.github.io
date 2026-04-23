@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>汉字 Flashcard Browser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f2f2f0;
@@ -88,6 +90,24 @@
     padding: 8px 0 2px; flex-wrap: wrap; gap: 8px; align-items: flex-start;
   }
   #filter-panel.open { display: flex; }
+
+  @media (max-width: 640px) {
+    #filter-panel {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--surface);
+      flex-direction: column; flex-wrap: nowrap;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 16px 16px 32px;
+      margin: 0; max-width: 100%;
+      gap: 14px;
+    }
+    #filter-panel.open { display: flex; }
+    #filter-close {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-shrink: 0;
+    }
+  }
+  #filter-close { display: none; }
   .filter-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; width: 100%; }
   .filter-label {
     font-size: 0.73rem; color: var(--text-dim); text-transform: uppercase;
@@ -175,7 +195,11 @@
   <div class="header-top">
     <h1>汉字卡片</h1>
     <div class="search-wrap">
-      <input id="search" type="text" placeholder="Search pinyin, Chinese, or English…" autocomplete="off" spellcheck="false">
+      <input id="search" type="text" placeholder="Search pinyin…" autocomplete="off" spellcheck="false">
+      <div class="toggle-group" id="search-mode-toggle" style="flex-shrink:0;">
+        <button id="btn-pinyin" class="active" onclick="setSearchMode('pinyin')">Pinyin</button>
+        <button id="btn-english" onclick="setSearchMode('english')">English</button>
+      </div>
       <button id="filter-btn" onclick="toggleFilter()">⚙ Filter</button>
     </div>
   </div>
@@ -193,7 +217,8 @@
     <span class="count-label" id="count-label"></span>
   </div>
   <div id="filter-panel">
-    <div class="filter-row">
+    <div id="filter-close"><span style="font-weight:500;font-size:0.95rem;">Filters</span><button onclick="toggleFilter()" style="border:none;background:none;font-size:1.4rem;cursor:pointer;color:var(--text-dim);padding:0 4px;">✕</button></div>
+    <div class="filter-row" id="tone-filter-row">
       <span class="filter-label">Tone</span>
       <div class="filter-chips">
         <button class="chip t1" data-filter="tone" data-val="1" onclick="toggleChip(this)">1st ─</button>
@@ -203,7 +228,7 @@
         <button class="chip t5" data-filter="tone" data-val="5" onclick="toggleChip(this)">Neutral</button>
       </div>
     </div>
-    <div class="filter-row">
+    <div class="filter-row" id="radical-filter-row">
       <span class="filter-label">Radical</span>
       <div class="filter-chips" id="radical-chips"></div>
     </div>
@@ -521,6 +546,7 @@ const RADICAL_DB = {
 let allCards = [];
 let mode = 'words';
 let searchQ = '';
+let searchMode = 'pinyin'; // 'pinyin' | 'english'
 let activeTones = new Set();
 let activeCategories = new Set();
 let activeRadicals = new Set();
@@ -580,6 +606,14 @@ function parseXML(xmlText) {
     return { hanzi, pronRaw, displayPinyin, tone, charTones, definition, cleanDef, category, radical };
   }).filter(c => c.hanzi.length > 0);
 
+  // Deduplicate: keep only the first card for each unique hanzi
+  const seenHanzi = new Set();
+  allCards = allCards.filter(c => {
+    if (seenHanzi.has(c.hanzi)) return false;
+    seenHanzi.add(c.hanzi);
+    return true;
+  });
+
   initFilters();
   render();
 }
@@ -633,6 +667,16 @@ function setMode(m) {
   mode = m;
   document.getElementById('btn-words').classList.toggle('active', m === 'words');
   document.getElementById('btn-chars').classList.toggle('active', m === 'chars');
+  const charsOnly = m === 'chars';
+  document.getElementById('tone-filter-row').style.display = charsOnly ? '' : 'none';
+  document.getElementById('radical-filter-row').style.display = charsOnly ? '' : 'none';
+  // Clear tone/radical filters when switching to words
+  if (m === 'words') {
+    activeTones.clear();
+    activeRadicals.clear();
+    document.querySelectorAll('.chip.t1, .chip.t2, .chip.t3, .chip.t4, .chip.t5, .chip.rad')
+      .forEach(c => c.classList.remove('selected'));
+  }
   render();
 }
 
@@ -641,6 +685,15 @@ function toggleFilter() {
   const btn   = document.getElementById('filter-btn');
   panel.classList.toggle('open');
   btn.classList.toggle('active', panel.classList.contains('open'));
+}
+
+function setSearchMode(m) {
+  searchMode = m;
+  document.getElementById('btn-pinyin').classList.toggle('active', m === 'pinyin');
+  document.getElementById('btn-english').classList.toggle('active', m === 'english');
+  const input = document.getElementById('search');
+  input.placeholder = m === 'pinyin' ? 'Search pinyin or Chinese…' : 'Search English…';
+  if (searchQ) render();
 }
 
 function toggleChip(el) {
@@ -655,11 +708,15 @@ function toggleChip(el) {
 // ── Data helpers ──────────────────────────────────────────────────────────────
 function matchesSearch(card, q) {
   if (!q) return true;
+  // Chinese characters always match regardless of mode
   if (card.hanzi.includes(q)) return true;
-  if (card.displayPinyin.toLowerCase().includes(q)) return true;
-  const plain = card.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-  if (plain.includes(q)) return true;
-  if (card.definition.toLowerCase().includes(q)) return true;
+  if (searchMode === 'pinyin') {
+    if (card.displayPinyin.toLowerCase().includes(q)) return true;
+    const plain = card.displayPinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    if (plain.includes(q)) return true;
+  } else {
+    if (card.definition.toLowerCase().includes(q)) return true;
+  }
   return false;
 }
 
@@ -790,6 +847,8 @@ function buildCard(card) {
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+document.getElementById('tone-filter-row').style.display = 'none';
+document.getElementById('radical-filter-row').style.display = 'none';
 loadXML();
 </script>
 </body>
