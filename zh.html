@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>汉字 Flashcard Browser</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KaiTi&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f2f2f0;
@@ -36,7 +34,7 @@
     max-width: 1200px; margin: 0 auto;
   }
   h1 {
-    font-family: 'ZCOOL KaiTi', serif; font-size: 1.3rem; font-weight: 400;
+    font-family: 'Kaiti SC', 'Kaiti TC', 'KaiTi', 'STKaiti', '楷体', 'DFKai-SB', 'AR PL UKai CN', sans-serif; font-size: 1.3rem; font-weight: 400;
     color: var(--text-dim); letter-spacing: 0.08em; white-space: nowrap; flex-shrink: 0;
   }
   .search-wrap { flex: 1; display: flex; gap: 8px; }
@@ -138,7 +136,7 @@
   .card-back { transform: rotateY(180deg); justify-content: center; overflow: hidden; }
 
   .char-big {
-    font-family: 'ZCOOL KaiTi', serif; font-size: 2.6rem; line-height: 1.1;
+    font-family: 'Kaiti SC', 'Kaiti TC', 'KaiTi', 'STKaiti', '楷体', 'DFKai-SB', 'AR PL UKai CN', sans-serif; font-size: 2.6rem; line-height: 1.1;
     font-weight: 400; text-align: center; color: var(--tone5);
   }
   .char-big .tc1 { color: var(--tone1); }
@@ -159,7 +157,7 @@
     line-height: 1.55; text-align: center; overflow-y: auto;
     max-height: 100%; padding: 4px 8px; width: 100%;
   }
-  .back-char { font-family: 'ZCOOL KaiTi', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 3px; }
+  .back-char { font-family: 'Kaiti SC', 'Kaiti TC', 'KaiTi', 'STKaiti', '楷体', 'DFKai-SB', 'AR PL UKai CN', sans-serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 3px; }
   .back-pinyin { font-size: 0.76rem; color: var(--text-dim); margin-bottom: 5px; }
   .back-english { font-size: 0.78rem; font-weight: 500; color: var(--text); line-height: 1.5; }
   .back-radical { font-size: 0.71rem; color: var(--text-dim); margin-top: 6px; line-height: 1.45; }
