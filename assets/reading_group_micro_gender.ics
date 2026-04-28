@@ -51,4 +51,32 @@ DTEND;TZID=Europe/Vienna:20260121T133000
 LOCATION:D4.2.008 Meeting room (32)
 DESCRIPTION:Paper: TBD\nPresenter: TBD
 END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Reading Group: New Technologies
+DTSTART;TZID=Europe/Vienna:20260415T120000
+DTEND;TZID=Europe/Vienna:20260415T130000
+LOCATION:
+DESCRIPTION:Paper: Entrepreneurial Spawning from Remote Work\nPresenter: Raphael
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Reading Group: New Technologies
+DTSTART;TZID=Europe/Vienna:20260429T120000
+DTEND;TZID=Europe/Vienna:20260429T130000
+LOCATION:D4.2.008 Meeting room (32)
+DESCRIPTION:Paper: Management, Productivity, and Technology Choices\nPresenter: Kai
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Reading Group: New Technologies
+DTSTART;TZID=Europe/Vienna:20260513T120000
+DTEND;TZID=Europe/Vienna:20260513T130000
+LOCATION:D4.2.008 Meeting room (32)
+DESCRIPTION:Paper: TBD\nPresenter:TBD
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Reading Group: New Technologies
+DTSTART;TZID=Europe/Vienna:20260527T120000
+DTEND;TZID=Europe/Vienna:20260527T130000
+LOCATION:D4.2.008 Meeting room (32)
+DESCRIPTION:Paper: TBD\nPresenter:TBD
+END:VEVENT
 END:VCALENDAR
