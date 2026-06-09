@@ -20,7 +20,7 @@
     --name-to:    #1c388f;
     --acc-pink:   #e7589f;
     --acc-blue:   #5a86ef;
-    --grad:       linear-gradient(95deg, var(--acc-pink) -6%, var(--acc-blue) 106%);
+    --grad:       linear-gradient(90deg, var(--acc-pink), var(--acc-blue));
     --card-bg:    rgba(255,255,255,0.72);
     --card-bd:    rgba(255,255,255,0.85);
     --shadow:     0 14px 44px rgba(70,45,110,0.12);
@@ -51,13 +51,12 @@
   .tagline{ margin:.5rem 0 1rem; color:var(--ink-soft); font-weight:500; font-size:clamp(.85rem,2.6vw,1rem); }
   .hero-btns{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
 
-  /* ---------- Pill buttons ---------- */
+  /* ---------- Pill buttons (original, fully rounded) ---------- */
   .pill{ display:inline-flex; align-items:center; gap:.5em; font:inherit; font-weight:600; font-size:.92rem;
          padding:.62em 1.15em; border-radius:999px; cursor:pointer; text-decoration:none; border:1px solid transparent;
          transition:transform .15s ease, box-shadow .2s ease; }
   .pill i{ font-size:1.05em; }
-  .pill.solid{ color:#fff; background:var(--grad); background-repeat:no-repeat; background-size:100% 100%;
-               box-shadow:0 6px 18px rgba(120,70,180,.22); }
+  .pill.solid{ color:#fff; background:var(--grad); box-shadow:0 6px 18px rgba(120,70,180,.22); }
   .pill.ghost{ color:var(--ink); background:rgba(255,255,255,.72); border-color:rgba(120,90,160,.18); }
   .pill:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(120,70,180,.26); }
   .pill:focus-visible{ outline:3px solid var(--acc-blue); outline-offset:2px; }
@@ -71,7 +70,7 @@
              scroll-snap-type:y mandatory; scrollbar-width:none; padding:0 clamp(14px,4vw,40px); }
   .category::-webkit-scrollbar{ display:none; }
 
-  /* one section = a centered, fixed-height box; neighbors peek dimmed */
+  /* one section = a fixed-height box. First/last rest at the ends, middles center (peek both sides). */
   .card{ position:relative; height:var(--card-h); margin:var(--gap) auto; max-width:680px;
          scroll-snap-align:center; background:var(--card-bg); border:1px solid var(--card-bd);
          border-radius:var(--radius); box-shadow:var(--shadow);
@@ -96,6 +95,10 @@
   .item h3{ margin:0 0 .15rem; font-size:1.02rem; color:var(--ink); font-weight:600; }
   .item .meta{ font-size:.86rem; color:var(--ink-soft); }
 
+  /* inline utility: show this text only on desktop */
+  .desktop-only{ display:block; }
+  @media (max-width:860px){ .desktop-only{ display:none !important; } }
+
   /* ---------- Overlays ---------- */
   .cat-tabs{ position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:25;
              display:flex; gap:4px; padding:5px; border-radius:999px;
@@ -103,7 +106,7 @@
   .cat-tabs button{ font:inherit; font-size:.8rem; font-weight:600; cursor:pointer; border:none; background:transparent;
                     color:var(--ink-soft); padding:.45em .9em; border-radius:999px; transition:.2s;
                     display:flex; align-items:center; gap:.4em; }
-  .cat-tabs button.active{ color:#fff; background:var(--grad); background-repeat:no-repeat; background-size:100% 100%; }
+  .cat-tabs button.active{ color:#fff; background:var(--grad); }
 
   .sec-dots{ position:fixed; right:12px; top:calc(var(--header-h) + (100vh - var(--header-h))/2);
              transform:translateY(-50%); z-index:25; display:flex; flex-direction:column; gap:9px; }
@@ -119,14 +122,6 @@
   .chev.left{ left:12px; } .chev.right{ right:12px; }
   .chev[disabled]{ opacity:.25; pointer-events:none; }
   @media (hover:none){ .chev{ display:none; } }
-
-  /* desktop-only info area (placeholder for later) */
-  .desktop-only{ position:fixed; left:16px; bottom:16px; z-index:24; max-width:230px;
-                 background:rgba(255,255,255,.72); border:1px solid var(--card-bd); border-radius:18px;
-                 padding:12px 14px; box-shadow:var(--shadow); backdrop-filter:blur(8px);
-                 font-size:.82rem; color:var(--ink-soft); line-height:1.45; }
-  .desktop-only b{ color:var(--ink); }
-  @media (max-width:860px){ .desktop-only{ display:none !important; } }
 
   .hint{ position:fixed; left:50%; top:calc(var(--header-h) + 8px); transform:translateX(-50%); z-index:25;
          font-size:.78rem; color:var(--ink-soft); background:rgba(255,255,255,.78); padding:.4em .9em;
@@ -245,6 +240,8 @@
         </div>
         <div class="card-body">
           <p>GeoGebra charts of introductory macro models (Blanchard) with interactive sliders, in English and German.</p>
+          <p class="desktop-only"><strong>Desktop-only note.</strong> This sentence lives inside the box and only
+          appears on wide screens — resize below 860&nbsp;px and it disappears.</p>
           <div class="row-btns">
             <a class="pill solid" href="#"><i class="bi bi-sliders"></i> Open charts</a>
             <button class="pill ghost" data-modal="macro"><i class="bi bi-eye"></i> Preview (popup)</button>
@@ -270,11 +267,6 @@
   <button class="chev right" id="next" aria-label="Next category"><i class="bi bi-chevron-right"></i></button>
   <div class="sec-dots" id="dots"></div>
   <nav class="cat-tabs" id="tabs"></nav>
-
-  <aside class="desktop-only">
-    <b>Desktop-only panel</b><br>
-    Welthandelsplatz 1, 1020 Vienna · this box is hidden under 860&nbsp;px.
-  </aside>
 
   <div class="hint" id="hint"><i class="bi bi-hand-index-thumb"></i> Swipe / scroll · ← → categories · ↑ ↓ sections</div>
 
@@ -305,16 +297,11 @@
     return best;
   }
 
-  /* size cards relative to the stage, then pad each category so first/last can center */
+  /* size cards to the stage; no vertical category padding so the first box sits right under the header */
   function layout(){
     document.documentElement.style.setProperty('--header-h', header.offsetHeight+'px');
     const H = stage.clientHeight;
-    const cardH = clamp(Math.round(H*0.74), 300, 600);
-    document.documentElement.style.setProperty('--card-h', cardH+'px');
-    cats.forEach(c=>{
-      const pad = Math.max(8, (c.clientHeight - cardH)/2);
-      c.style.paddingTop = pad+'px'; c.style.paddingBottom = pad+'px';
-    });
+    document.documentElement.style.setProperty('--card-h', clamp(Math.round(H*0.74),300,600)+'px');
     sync();
   }
 
@@ -329,21 +316,33 @@
     cat.scrollTo({ top:t, behavior:SB });
   }
 
-  /* desktop wheel: window-wide, one flick = one step */
+  /* desktop wheel: the navigate-vs-scroll decision is anchored at the START of each gesture */
+  let lastWheel=0, gestureMode='nav', stepDone=false;
   window.addEventListener('wheel', e=>{
     if(modalOpen) return;
-    if(lock){ e.preventDefault(); return; }
-    const ax=Math.abs(e.deltaX), ay=Math.abs(e.deltaY), TH=4;
-    if(ax>ay && ax>TH){ e.preventDefault(); lockNow(); goCat(e.deltaX>0?1:-1); return; }
-    if(ay>TH){
-      const body = e.target.closest ? e.target.closest('.card-body') : null;
-      if(body && body.scrollHeight > body.clientHeight+1){
-        const down=e.deltaY>0;
-        const atTop=body.scrollTop<=0, atBot=body.scrollTop+body.clientHeight>=body.scrollHeight-1;
-        if((down && !atBot)||(!down && !atTop)) return;   /* let the text scroll */
+    const now = performance.now();
+    if(now - lastWheel > 180){                  /* a new gesture begins */
+      stepDone = false;
+      const ax=Math.abs(e.deltaX), ay=Math.abs(e.deltaY);
+      if(ax>ay){ gestureMode='nav'; }           /* horizontal → always navigate categories */
+      else{
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const body = el && el.closest ? el.closest('.card-body') : null;
+        if(body && body.scrollHeight > body.clientHeight + 1){
+          const down=e.deltaY>0;
+          const atTop=body.scrollTop<=0, atBot=body.scrollTop+body.clientHeight>=body.scrollHeight-1;
+          gestureMode = ((down&&!atBot)||(!down&&!atTop)) ? 'scroll' : 'nav';
+        } else gestureMode='nav';
       }
-      e.preventDefault(); lockNow(); goSec(e.deltaY>0?1:-1);
     }
+    lastWheel = now;
+
+    if(gestureMode==='scroll') return;          /* let the text scroll for the whole gesture */
+    e.preventDefault();
+    if(lock || stepDone) return;
+    const ax=Math.abs(e.deltaX), ay=Math.abs(e.deltaY), TH=4;
+    if(ax>ay && ax>TH){ stepDone=true; lockNow(); goCat(e.deltaX>0?1:-1); }
+    else if(ay>TH){ stepDone=true; lockNow(); goSec(e.deltaY>0?1:-1); }
   }, { passive:false });
 
   addEventListener('keydown', e=>{
