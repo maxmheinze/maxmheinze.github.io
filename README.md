@@ -65,12 +65,3 @@ Edit `_data/buttons.yml` (label, href, icon, `solid: true`). They appear on ever
 Course/project pages (e.g. `econometrics-i.md`) use `layout: page` — normal flowing
 content with the same header and styling. Add new ones the same way.
 
-## Assets to add to `/assets/`
-`cv_website.pdf`, `favicon.ico`, slide HTML/PDF files, and any PDFs referenced above
-(carry these over from the old repo).
-
-## Local preview
-```
-bundle exec jekyll serve
-```
-Then open http://localhost:4000 .
