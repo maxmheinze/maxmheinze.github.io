@@ -356,23 +356,21 @@
     return true;
   }
 
-  /* desktop wheel: always navigate — one step per gesture (overflow now goes to the ⋯ popup) */
-  let lastWheel=0, stepDone=false, cooldown=false, cdT;
-  const cool = (ms=620)=>{ cooldown=true; clearTimeout(cdT); cdT=setTimeout(()=>cooldown=false,ms); };
-  const afterNav = ()=>{ cool(); };
+  /* desktop wheel: always navigate. A short cooldown throttles to one step at a time and
+     ALWAYS clears on its own, so the wheel can never latch and you can scroll through everything. */
+  let cooldown=false, cdT;
+  const cool = (ms=520)=>{ cooldown=true; clearTimeout(cdT); cdT=setTimeout(()=>cooldown=false,ms); };
+  const afterNav = ()=>cool();
 
   window.addEventListener('wheel', e=>{
     if(modalOpen) return;                               /* let the popup scroll */
     e.preventDefault();
-    const now=performance.now();
-    if(now - lastWheel > 200) stepDone=false;           /* new gesture */
-    lastWheel=now;
-    if(cooldown || stepDone) return;
-    const ax=Math.abs(e.deltaX), ay=Math.abs(e.deltaY), TH=4;
+    if(cooldown) return;
+    const ax=Math.abs(e.deltaX), ay=Math.abs(e.deltaY), TH=6;
     let moved=false;
     if(ax>ay && ax>TH) moved=goCat(e.deltaX>0?1:-1);
     else if(ay>TH)     moved=goSec(e.deltaY>0?1:-1);
-    if(moved){ stepDone=true; afterNav(); }
+    if(moved) cool();
   }, { passive:false });
 
   addEventListener('keydown', e=>{
