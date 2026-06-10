@@ -112,6 +112,7 @@
     cats.forEach(cat=> sectionsOf(cat).forEach(card=>{
       const body = card.querySelector('.card-body');
       card.classList.remove('clipped');
+      card.onclick = null;
       const old=card.querySelector('.more-btn'); if(old) old.remove();
       if(isTouch) return;
       if(body.scrollHeight > body.clientHeight + 1){
@@ -123,6 +124,8 @@
         btn.innerHTML='<i class="bi bi-three-dots"></i>';
         btn.onclick=()=>openModalHTML(title, html);
         card.appendChild(btn);
+        /* clicking anywhere on the box opens it too — but leave links/buttons alone */
+        card.onclick=(e)=>{ if(e.target.closest('a, button')) return; openModalHTML(title, html); };
       }
     }));
     sync();
