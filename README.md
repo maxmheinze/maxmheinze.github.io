@@ -1,6 +1,6 @@
 # maxheinze.eu
 
-Personal academic site. Jekyll on GitHub Pages (no Actions or custom plugins needed).
+Personal academic site. Jekyll on GitHub Pages.
 The home page is authored in plain Markdown; a small client-side script
 (`assets/js/panels.js`) restructures the rendered Markdown into the horizontal
 category / vertical section panel layout.

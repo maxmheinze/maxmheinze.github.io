@@ -189,16 +189,18 @@
 
   /* overlays */
   const tabs=document.getElementById('tabs'), dotsWrap=document.getElementById('dots');
-  cats.forEach((c,i)=>{ const b=document.createElement('button');
+  cats.forEach((c,i)=>{ const b=document.createElement('button'); b.className='cat-tab';
     b.innerHTML=`<i class="bi ${c.dataset.icon}"></i> ${c.dataset.name}`;
     b.onclick=()=>{ if(goCat(i-curCat)) afterNav(); }; tabs.appendChild(b); });
   const prev=document.getElementById('prev'), next=document.getElementById('next');
+  tabs.insertBefore(prev, tabs.firstChild);   /* arrow ◄  [tabs]  ► arrow */
+  tabs.appendChild(next);
   prev.onclick=()=>{ if(goCat(-1)) afterNav(); };
   next.onclick=()=>{ if(goCat(1)) afterNav(); };
 
   function sync(){
     cats.forEach(c=>{ const a=curSecIdx(c); sectionsOf(c).forEach((s,i)=>s.classList.toggle('active', i===a)); });
-    [...tabs.children].forEach((b,i)=>b.classList.toggle('active', i===curCat));
+    [...tabs.querySelectorAll('.cat-tab')].forEach((b,i)=>b.classList.toggle('active', i===curCat));
     prev.disabled=curCat===0; next.disabled=curCat===cats.length-1;
     const cat=cats[curCat], secs=sectionsOf(cat), act=curSecIdx(cat);
     dotsWrap.innerHTML='';

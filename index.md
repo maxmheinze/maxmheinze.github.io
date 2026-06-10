@@ -69,7 +69,7 @@ Winter 2025/26 (together with [Sannah Tijani](https://sannahtijani.github.io)), 
 
 [Preliminaries](assets/00_preliminaries_eco2.html){: .pill .solid} [Formalities](assets/0_formalities_eco2.html){: .pill .solid} [Statistical Learning](assets/1_statistical_learning.html){: .pill .solid} [Causality and DAGs](assets/2_causality_dag.html){: .pill .solid} [Threats to Causal Identification](assets/3_threats.html){: .pill .solid} [Instrumental Variables](assets/4_iv.html){: .pill .solid} [Non-Linear Models and Maximum Likelihood](assets/5_non_linear.html){: .pill .solid} [More on Identification](assets/6_more.html){: .pill .solid}
 
-_Note that the first part of Slide Set 2, as well as Slide Sets 3 and 5 were created by [Sannah Tijani](https://sannahtijani.github.io)._
+_Note that the first part of the slide set on causality and DAGs, as well as the slide sets on threats to identification and non-linear models were created by [Sannah Tijani](https://sannahtijani.github.io)._
 
 ## Econometrics III / Applied Econometrics
 
