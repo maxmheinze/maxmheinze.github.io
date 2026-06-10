@@ -52,46 +52,22 @@ This is a very early stage project. A description will follow soon.
 
 Summer 2025, Summer 2026 (together with [Sannah Tijani](https://sannahtijani.github.io))
 
+### Slides (English)
 
-<div class="popup-src" id="wip-details" markdown="1">
-### Slides
+[Preliminaries](assets/00_preliminaries.html){: .pill .solid} [Formalities](assets/0_formalities.html){: .pill .solid} [Introduction](assets/1_introduction.html){: .pill .solid} [Simple Linear Regression](assets/2_simple_linear_regression.html){: .pill .solid} [Multiple Linear Regression](assets/3_multiple_linear_regression.html){: .pill .solid} [Testing and Inference](assets/4_testing_and_inference.html){: .pill .solid} [More on Multiple Regression](assets/5_more_on_multiple_regression.html){: .pill .solid} [Heteroskedasticity](assets/6_heteroskedasticity.html){: .pill .solid}
 
-**Module 00: Preliminaries** [View German Slides](assets/00_grundlagen.html){: .pill .ghost} [View English Slides](assets/00_preliminaries.html){: .pill .solid}
 
-**Module 0: Formalities** [View German Slides](assets/0_organisatorisches.html){: .pill .ghost} [View English Slides](assets/0_formalities.html){: .pill .solid}
+### Slides (German)
 
-**Module 1: Introduction** [View German Slides](assets/1_einfuehrung.html){: .pill .ghost} [View English Slides](assets/1_introduction.html){: .pill .solid}
-
-**Module 2: Simple Linear Regression** [View German Slides](assets/2_einfache_lineare_regression.html){: .pill .ghost} [View English Slides](assets/2_simple_linear_regression.html){: .pill .solid}
-
-**Module 3: Multiple Linear Regression** [View German Slides](assets/3_multiple_lineare_regression.html){: .pill .ghost} [View English Slides](assets/3_multiple_linear_regression.html){: .pill .solid}
-
-**Module 4: Testing and Inference** [View German Slides](assets/4_tests_und_inferenz.html){: .pill .ghost} [View English Slides](assets/4_testing_and_inference.html){: .pill .solid}
-
-**Module 5: More on Multiple Regression** [View German Slides](assets/5_mehr_zu_multipler_regression.html){: .pill .ghost} [View English Slides](assets/5_more_on_multiple_regression.html){: .pill .solid}
-
-**Module 6: Heteroskedasticity** [View German Slides](assets/6_heteroskedastizitaet.html){: .pill .ghost} [View English Slides](assets/6_heteroskedasticity.html){: .pill .solid}
-</div>
+[Preliminaries](assets/00_grundlagen.html){: .pill .ghost} [Formalities](assets/0_organisatorisches.html){: .pill .ghost} [Introduction](assets/1_einfuehrung.html){: .pill .ghost} [Simple Linear Regression](assets/2_einfache_lineare_regression.html){: .pill .ghost} [Multiple Linear Regression](assets/3_multiple_lineare_regression.html){: .pill .ghost} [Testing and Inference](assets/4_tests_und_inferenz.html){: .pill .ghost} [More on Multiple Regression](assets/5_mehr_zu_multipler_regression.html){: .pill .ghost} [Heteroskedasticity](assets/6_heteroskedastizitaet.html){: .pill .ghost}
 
 ## Econometrics II
 
 Winter 2025/26 (together with [Sannah Tijani](https://sannahtijani.github.io)), Winter 2026/27 (together with [Ines Kusmenko](https://www.wu.ac.at/en/economics/people/kusmenko-i))
 
-**Module 00: Preliminaries** [View Slides](assets/00_preliminaries_eco2.html){: .pill .solid}
+### Slides
 
-**Module 0: Formalities** [View Slides](assets/0_formalities_eco2.html){: .pill .solid}
-
-**Module 1: Statistical Learning and the Role of Econometrics** [View Slides](assets/1_statistical_learning.html){: .pill .solid}
-
-**Module 2: Causality and DAGs** [View Slides](assets/2_causality_dag.html){: .pill .solid}
-
-**Module 3: Threats to Causal Identification** [View Slides](assets/3_threats.html){: .pill .solid}
-
-**Module 4: Instrumental Variables** [View Slides](assets/4_iv.html){: .pill .solid}
-
-**Module 5: Non-Linear Models and Maximum Likelihood** [View Slides](assets/5_non_linear.html){: .pill .solid}
-
-**Module 6: More Identification Strategies** [View Slides](assets/6_more.html){: .pill .solid}
+[Preliminaries](assets/00_preliminaries_eco2.html){: .pill .solid} [Formalities](assets/0_formalities_eco2.html){: .pill .solid} [Statistical Learning](assets/1_statistical_learning.html){: .pill .solid} [Causality and DAGs](assets/2_causality_dag.html){: .pill .solid} [Threats to Causal Identification](assets/3_threats.html){: .pill .solid} [Instrumental Variables](assets/4_iv.html){: .pill .solid} [Non-Linear Models and Maximum Likelihood](assets/5_non_linear.html){: .pill .solid} [More on Identification](assets/6_more.html){: .pill .solid}
 
 _Note that the first part of Slide Set 2, as well as Slide Sets 3 and 5 were created by [Sannah Tijani](https://sannahtijani.github.io)._
 
@@ -99,13 +75,9 @@ _Note that the first part of Slide Set 2, as well as Slide Sets 3 and 5 were cre
 
 Summer 2026 (together with [Sannah Tijani](https://sannahtijani.github.io))
 
-**Module 00: Preliminaries** [View Slides](assets/00_preliminaries_eco3.html){: .pill .solid}
+### Slides
 
-**Module 0: Formalities** [View Slides](assets/0_formalities_thursday.html){: .pill .solid}
-
-**Module 1: Time Series and Autocorrelation** [View Slides](assets/1_ts_auto.html){: .pill .solid}
-
-**Module 2: Panel Data and Further Issues** [View Slides](assets/2_panel.html){: .pill .solid}
+[Preliminaries](assets/00_preliminaries_eco3.html){: .pill .solid} [Formalities](assets/0_formalities_thursday.html){: .pill .solid} [Time Series and Autocorrelation](assets/1_ts_auto.html){: .pill .solid} [Panel Data and Further Issues](assets/2_panel.html){: .pill .solid}
 
 _Note that roughly the first half of each slide set was created by [Sannah Tijani](https://sannahtijani.github.io)._
 
