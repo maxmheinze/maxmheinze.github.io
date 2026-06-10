@@ -46,7 +46,7 @@ links, a slide download, or a preprint link inside.
 
 Summer 2025, Summer 2026
 
-**Module 00: Preliminaries** · [View German Slides](assets/00_grundlagen.html){: .ghost} · [View English Slides](assets/00_preliminaries.html)
+**Module 00: Preliminaries** · [View German Slides](assets/00_grundlagen.html){: .pill .ghost} · [View English Slides](assets/00_preliminaries.html)
 
 **Module 0: Formalities** · [View German Slides](assets/0_organisatorisches.html) · [View English Slides](assets/0_formalities.html)
 
