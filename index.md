@@ -39,12 +39,22 @@ links, a slide download, or a preprint link inside.
 </div>
 -->
 
+## Bridges (Title TBD)
+
+This is a very early stage project. A description will follow soon.
+
+[View Slides](/assets/bridges.html)
+
 # Teaching
 {: data-icon="bi-easel2"}
 
 ## Econometrics I
 
 Summer 2025, Summer 2026 (together with [Sannah Tijani](https://sannahtijani.github.io))
+
+
+<div class="popup-src" id="wip-details" markdown="1">
+### Slides
 
 **Module 00: Preliminaries** [View German Slides](assets/00_grundlagen.html){: .pill .ghost} [View English Slides](assets/00_preliminaries.html){: .pill .solid}
 
@@ -61,6 +71,7 @@ Summer 2025, Summer 2026 (together with [Sannah Tijani](https://sannahtijani.git
 **Module 5: More on Multiple Regression** [View German Slides](assets/5_mehr_zu_multipler_regression.html){: .pill .ghost} [View English Slides](assets/5_more_on_multiple_regression.html){: .pill .solid}
 
 **Module 6: Heteroskedasticity** [View German Slides](assets/6_heteroskedastizitaet.html){: .pill .ghost} [View English Slides](assets/6_heteroskedasticity.html){: .pill .solid}
+</div>
 
 ## Econometrics II
 
