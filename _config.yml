@@ -1,5 +1,18 @@
-theme: jekyll-theme-cayman
-include: 
-  - assets/css/style.scss
-title: ""
-description: ""
+title: Max Heinze
+description: Economics PhD Student @ WU Vienna
+lang: en-US
+
+# Custom domain (see CNAME) → site lives at the root, so baseurl is empty.
+baseurl: ""
+url: "https://maxheinze.eu"
+
+markdown: kramdown
+kramdown:
+  parse_block_html: true   # lets markdown render inside the popup-src <div> blocks
+
+plugins:
+  - jekyll-seo-tag
+
+exclude:
+  - README.md
+  - prototype.html

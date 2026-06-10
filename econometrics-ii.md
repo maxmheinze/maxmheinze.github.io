@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Max Heinze
 description: Economics PhD Student @ WU Vienna
 ---

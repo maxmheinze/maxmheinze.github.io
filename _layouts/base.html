@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+<head>
+  <meta charset="UTF-8">
+  {% seo %}
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#bf1f6d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Red+Hat+Display:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <link rel="shortcut icon" href="{{ '/favicon.ico' | relative_url }}">
+</head>
+<body class="{% if page.layout == 'home' %}is-home building{% else %}is-page{% endif %}">
+
+  <header class="hero">
+    <h1 class="name"><a href="{{ '/' | relative_url }}">{{ site.title | default: 'Max Heinze' }}</a></h1>
+    <div class="tagline">{{ page.description | default: site.description }}</div>
+    <nav class="hero-btns">
+      {% for b in site.data.buttons %}
+        {% assign h = b.href %}
+        {% if h contains '://' or h contains 'mailto:' %}{% assign url = h %}{% else %}{% assign url = h | relative_url %}{% endif %}
+        <a class="pill {% if b.solid %}solid{% else %}ghost{% endif %}" href="{{ url }}"{% if h contains '://' %} target="_blank" rel="noopener"{% endif %}><i class="bi {{ b.icon }}"></i> {{ b.label }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+
+  {{ content }}
+
+  {% unless page.layout == 'home' %}
+    <footer class="site-footer">Max Heinze · Welthandelsplatz 1, 1020 Vienna · <a href="mailto:hi@maxheinze.eu">hi@maxheinze.eu</a></footer>
+  {% endunless %}
+</body>
+</html>

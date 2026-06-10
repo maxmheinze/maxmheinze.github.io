@@ -1,0 +1,24 @@
+---
+layout: base
+---
+<main class="stage" id="stage" role="main"></main>
+
+<!-- The page's markdown is rendered here, then the script restructures it into
+     categories (#) and section boxes (##) inside #stage, and removes this node. -->
+<div id="rawcontent" hidden>{{ content }}</div>
+
+<button class="chev left"  id="prev" aria-label="Previous category"><i class="bi bi-chevron-left"></i></button>
+<button class="chev right" id="next" aria-label="Next category"><i class="bi bi-chevron-right"></i></button>
+<div class="sec-dots" id="dots"></div>
+<nav class="cat-tabs" id="tabs"></nav>
+<div class="hint" id="hint"><i class="bi bi-hand-index-thumb"></i> Swipe / scroll &middot; &larr; &rarr; categories &middot; &uarr; &darr; sections</div>
+
+<div class="modal-back" id="modalBack">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="{{ '/assets/js/panels.js' | relative_url }}" defer></script>

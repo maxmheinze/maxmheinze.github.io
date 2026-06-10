@@ -1,0 +1,16 @@
+# Buttons shown in the fixed header on every page.
+# icon = any Bootstrap Icons name (https://icons.getbootstrap.com)
+# solid: true  → gradient pill; otherwise a light "ghost" pill.
+- label: View CV
+  href: /assets/cv_website.pdf
+  icon: bi-file-earmark-person
+  solid: true
+- label: Employer Page
+  href: https://www.wu.ac.at/en/economics/people/maximilian-h
+  icon: bi-mortarboard
+- label: Email (Work)
+  href: mailto:mheinze@wu.ac.at
+  icon: bi-envelope
+- label: Email (Personal)
+  href: mailto:hi@maxheinze.eu
+  icon: bi-envelope-heart
