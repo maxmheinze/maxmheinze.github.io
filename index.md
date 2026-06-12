@@ -8,6 +8,7 @@ description: Economics PhD Student @ WU Vienna
 {: data-icon="bi-journal-text"}
 
 ## Downstream Impacts of Mines on Agriculture in Africa
+{: data-label="Published"}
 *Vashold, L., Pirich, G., Heinze, M., & Kuschnig, N. (2026). Journal of Development Economics, 179, 103671.*
 
 **Abstract.** Mining operations in Africa are expanding rapidly, creating negative externalities that
@@ -40,6 +41,7 @@ links, a slide download, or a preprint link inside.
 -->
 
 ## Bridges (Title TBD)
+{: data-label="Work in Progress"}
 
 This is a very early stage project. A description will follow soon.
 
@@ -119,7 +121,7 @@ This simple web app, which is available to anyone with a WU employee email addre
 
 ## trees.maxheinze.eu
 
-I was walking in a park and wanted to know what kind of tree I had walked past. Upon discovering that the web app provided by the city of vienna for its tree database is unusable, I made this one instead.
+I was walking in a park and wanted to know what kind of tree I had walked past. Upon discovering that the web app provided by the city of Vienna for its tree database is unusable, I made this one instead.
 
 [Open Web App](https://trees.maxheinze.eu)
 

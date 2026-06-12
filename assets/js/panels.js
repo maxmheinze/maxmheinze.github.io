@@ -21,7 +21,9 @@
       if(!cat){ const f=document.createElement('h1'); f.textContent=''; newCat(f); }
       const card=document.createElement('article'); card.className='card';
       const head=document.createElement('div'); head.className='card-head';
-      head.innerHTML = `<div class="eyebrow"><i class="bi ${cat.dataset.icon}"></i> ${cat.dataset.name}</div>`;
+      const label = h2.getAttribute('data-label');
+      const eyebrow = `<i class="bi ${cat.dataset.icon}"></i> ${cat.dataset.name}` + (label ? ` &middot; ${label}` : '');
+      head.innerHTML = `<div class="eyebrow">${eyebrow}</div>`;
       const h=document.createElement('h2'); h.innerHTML=h2.innerHTML; head.appendChild(h);
       body=document.createElement('div'); body.className='card-body';
       card.appendChild(head); card.appendChild(body); cat.appendChild(card);
