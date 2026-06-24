@@ -54,7 +54,7 @@ This is a very early stage project. A description will follow soon.
 
 Summer 2025, Summer 2026 (together with [Sannah Tijani](https://sannahtijani.github.io))
 
-[Lecture Notes](assets/econometrics_notes.pdf)
+[Lecture Notes](assets/econometrics_script.pdf)
 
 ### Slides (English)
 
