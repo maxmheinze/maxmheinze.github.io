@@ -58,12 +58,14 @@ Summer 2025, Summer 2026 (together with [Sannah Tijani](https://sannahtijani.git
 
 ### Slides (English)
 
-[Preliminaries](assets/00_preliminaries.html){: .pill .ghost} [Formalities](assets/0_formalities.html){: .pill .ghost} [Introduction](assets/1_introduction.html){: .pill .ghost} [Simple Linear Regression](assets/2_simple_linear_regression.html){: .pill .ghost} [Multiple Linear Regression](assets/3_multiple_linear_regression.html){: .pill .ghost} [Testing and Inference](assets/4_testing_and_inference.html){: .pill .ghost} [More on Multiple Regression](assets/5_more_on_multiple_regression.html){: .pill .ghost} [Heteroskedasticity](assets/6_heteroskedasticity.html){: .pill .ghost}
+[Preliminaries](assets/00_preliminaries.html){: .pill .ghost} [Introduction](assets/1_introduction.html){: .pill .ghost} [Simple Linear Regression](assets/2_simple_linear_regression.html){: .pill .ghost} [Multiple Linear Regression](assets/3_multiple_linear_regression.html){: .pill .ghost} [Testing and Inference](assets/4_testing_and_inference.html){: .pill .ghost} [More on Multiple Regression](assets/5_more_on_multiple_regression.html){: .pill .ghost} [Heteroskedasticity](assets/6_heteroskedasticity.html){: .pill .ghost}
 
 
 ### Slides (German)
 
-[Preliminaries](assets/00_grundlagen.html){: .pill .ghost} [Formalities](assets/0_organisatorisches.html){: .pill .ghost} [Introduction](assets/1_einfuehrung.html){: .pill .ghost} [Simple Linear Regression](assets/2_einfache_lineare_regression.html){: .pill .ghost} [Multiple Linear Regression](assets/3_multiple_lineare_regression.html){: .pill .ghost} [Testing and Inference](assets/4_tests_und_inferenz.html){: .pill .ghost} [More on Multiple Regression](assets/5_mehr_zu_multipler_regression.html){: .pill .ghost} [Heteroskedasticity](assets/6_heteroskedastizitaet.html){: .pill .ghost}
+[Preliminaries](assets/00_grundlagen.html){: .pill .ghost} [Introduction](assets/1_einfuehrung.html){: .pill .ghost} [Simple Linear Regression](assets/2_einfache_lineare_regression.html){: .pill .ghost} [Multiple Linear Regression](assets/3_multiple_lineare_regression.html){: .pill .ghost} [Testing and Inference](assets/4_tests_und_inferenz.html){: .pill .ghost} [More on Multiple Regression](assets/5_mehr_zu_multipler_regression.html){: .pill .ghost} [Heteroskedasticity](assets/6_heteroskedastizitaet.html){: .pill .ghost}
+
+_Slides are based on a slide set by [Simon Heß](https://hesss.org)._
 
 ## Econometrics II
 
@@ -71,9 +73,9 @@ Winter 2025/26 (together with [Sannah Tijani](https://sannahtijani.github.io)), 
 
 ### Slides
 
-[Preliminaries](assets/00_preliminaries_eco2.html){: .pill .ghost} [Formalities](assets/0_formalities_eco2.html){: .pill .ghost} [Statistical Learning](assets/1_statistical_learning.html){: .pill .ghost} [Causality and DAGs](assets/2_causality_dag.html){: .pill .ghost} [Threats to Causal Identification](assets/3_threats.html){: .pill .ghost} [Instrumental Variables](assets/4_iv.html){: .pill .ghost} [Non-Linear Models and Maximum Likelihood](assets/5_non_linear.html){: .pill .ghost} [More on Identification](assets/6_more.html){: .pill .ghost}
+[Statistical Learning](assets/1_statistical_learning.html){: .pill .ghost} [Causality and DAGs](assets/2_causality_dag.html){: .pill .ghost} [Threats to Causal Identification](assets/3_threats.html){: .pill .ghost} [Instrumental Variables](assets/4_iv.html){: .pill .ghost} [Non-Linear Models and Maximum Likelihood](assets/5_non_linear.html){: .pill .ghost} [More on Identification](assets/6_more.html){: .pill .ghost}
 
-_Note that the first part of the slide set on causality and DAGs, as well as the slide sets on threats to identification and non-linear models were created by [Sannah Tijani](https://sannahtijani.github.io)._
+_Slides are based on a slide set by [Nikolas Kuschnig](https://kuschnig.eu). Some parts of the slide sets were created and/or modified by [Sannah Tijani](https://sannahtijani.github.io) and [Ines Kusmenko](https://www.wu.ac.at/en/economics/people/kusmenko-i)._
 
 ## Econometrics III / Applied Econometrics
 
@@ -83,7 +85,7 @@ Summer 2026 (together with [Sannah Tijani](https://sannahtijani.github.io))
 
 [Preliminaries](assets/00_preliminaries_eco3.html){: .pill .ghost} [Formalities](assets/0_formalities_thursday.html){: .pill .ghost} [Time Series and Autocorrelation](assets/1_ts_auto.html){: .pill .ghost} [Panel Data and Further Issues](assets/2_panel.html){: .pill .ghost}
 
-_Note that roughly the first half of each slide set was created by [Sannah Tijani](https://sannahtijani.github.io)._
+_Roughly the first half of each slide set was created by [Sannah Tijani](https://sannahtijani.github.io)._
 
 ## Development Economics: Research and Policy Seminar
 
